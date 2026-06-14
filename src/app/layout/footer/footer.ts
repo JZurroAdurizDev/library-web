@@ -8,9 +8,16 @@ import { Component } from '@angular/core';
 })
 export class Footer {
 
+  /**
+   * Current year displayed in the copyright section.
+   */
   public year: number;
 
   constructor() {
+
+    /**
+     * Initializes the current year when the component is created.
+     */
     this.year = new Date().getFullYear();
   }
 }
