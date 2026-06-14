@@ -1,4 +1,19 @@
-<!-- header.html -->
-<header>
-    <h1>Library Web</h1>
+<header class="header">
+    <div class="header-brand">
+        <span>📖</span>
+        <span>Library Web</span>
+    </div>
+
+    <nav class="header-nav">
+        <a routerLink="/home">Inicio</a>
+        <a routerLink="/books">Libros</a>
+        <a routerLink="/my-loans">Mis préstamos</a>
+        <a routerLink="/account">Mi cuenta</a>
+        <a routerLink="/admin">Admin</a>
+    </nav>
+
+    <div class="header-actions">
+        <a routerLink="/login">Iniciar sesión</a>
+        <a routerLink="/register">Registrarse</a>
+    </div>
 </header>
