@@ -1,24 +1,38 @@
 <header class="header">
 
     <!-- Application brand -->
-    <div class="header-brand">
-        <span>📖</span>
-        <span>Library Web</span>
-    </div>
+    <a routerLink="/home" class="header-brand">
+        <img
+            src="images/logo.png"
+            alt="Library Web logo"
+            class="header-logo">
+    </a>
 
     <!-- Main navigation -->
     <nav class="header-nav">
         <a routerLink="/home">Inicio</a>
         <a routerLink="/books">Libros</a>
         <a routerLink="/my-loans">Mis préstamos</a>
-        <a routerLink="/account">Mi cuenta</a>
         <a routerLink="/admin">Admin</a>
     </nav>
 
     <!-- Authentication actions -->
     <div class="header-actions">
-        <a routerLink="/login">Iniciar sesión</a>
-        <a routerLink="/register">Registrarse</a>
+
+        <button
+            type="button"
+            aria-label="Cambiar idioma">
+            <span class="material-symbols-outlined">
+                language
+            </span>
+        </button>
+
+        <a routerLink="/login" aria-label="Iniciar sesión">
+            <span class="material-symbols-outlined">
+                account_circle
+            </span>
+        </a>
+
     </div>
 
 </header>

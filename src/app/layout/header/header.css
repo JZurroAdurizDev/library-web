@@ -12,16 +12,21 @@
     min-height: 64px;
     padding: 0 32px;
 
-    border-bottom: 1px solid currentColor;
+    border-bottom: 1px solid #bcc7d4;
 }
 
 /* Brand section */
 .header-brand {
     display: flex;
     align-items: center;
-    gap: 8px;
+    text-decoration: none;
+    color: inherit;
+}
 
-    font-weight: 700;
+.header-logo {
+    height: 100px;
+    width: auto;
+    display: block;
 }
 
 /* Main navigation */
