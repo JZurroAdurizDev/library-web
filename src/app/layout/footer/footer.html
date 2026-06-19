@@ -3,8 +3,30 @@
     <!-- Main footer container -->
     <div class="footer-grid">
 
-        <!-- Empty column reserved for future content -->
-        <div class="footer-left"></div>
+        <!-- Social links -->
+        <div class="footer-left">
+
+            <a
+                href="https://github.com/JZurroAdurizDev"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub profile">
+
+                <i class="fa-brands fa-github"></i>
+
+            </a>
+
+            <a
+                href="https://www.linkedin.com/in/jabier-zurro-aduriz-051345a3"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn profile">
+
+                <i class="fa-brands fa-linkedin"></i>
+
+            </a>
+
+        </div>
 
         <!-- Copyright information -->
         <div class="footer-center">
@@ -13,10 +35,11 @@
 
         <!-- Secondary navigation links -->
         <nav class="footer-right">
-            <a href="#">Política de privacidad</a>
-            <a href="#">Términos y condiciones</a>
-            <a href="#">Cookies</a>
+            <a routerLink="/privacy-policy">Política de privacidad</a>
+            <a routerLink="/terms-and-conditions">Términos y condiciones</a>
+            <a routerLink="/cookies-policy">Cookies</a>
         </nav>
+
     </div>
 
 </footer>
