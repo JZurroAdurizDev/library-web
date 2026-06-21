@@ -1,2 +1,192 @@
-<!-- register.html -->
-<h1>Register</h1>
+<section aria-labelledby="register-title">
+
+    <header>
+        <h1 id="register-title">
+            Crear cuenta
+        </h1>
+
+        <p>
+            Regístrate para acceder al catálogo y gestionar tus préstamos.
+        </p>
+    </header>
+
+    <form
+        [formGroup]="registerForm"
+        (ngSubmit)="onSubmit()"
+        novalidate>
+
+        <div>
+            <label for="dni">
+                DNI
+            </label>
+
+            <input
+                id="dni"
+                type="text"
+                formControlName="dni"
+                autocomplete="off">
+
+            @if (
+                registerForm.controls['dni'].touched &&
+                registerForm.controls['dni'].hasError('required')
+            ) {
+                <p>
+                    El DNI es obligatorio.
+                </p>
+            }
+
+            @if (
+                registerForm.controls['dni'].touched &&
+                registerForm.controls['dni'].hasError('pattern')
+            ) {
+                <p>
+                    Introduce un DNI válido.
+                </p>
+            }
+        </div>
+
+        <div>
+            <label for="firstName">
+                Nombre
+            </label>
+
+            <input
+                id="firstName"
+                type="text"
+                formControlName="firstName"
+                autocomplete="given-name">
+
+            @if (
+                registerForm.controls['firstName'].touched &&
+                registerForm.controls['firstName'].hasError('required')
+            ) {
+                <p>
+                    El nombre es obligatorio.
+                </p>
+            }
+        </div>
+
+        <div>
+            <label for="lastName">
+                Apellidos
+            </label>
+
+            <input
+                id="lastName"
+                type="text"
+                formControlName="lastName"
+                autocomplete="family-name">
+
+            @if (
+                registerForm.controls['lastName'].touched &&
+                registerForm.controls['lastName'].hasError('required')
+            ) {
+                <p>
+                    Los apellidos son obligatorios.
+                </p>
+            }
+        </div>
+
+        <div>
+            <label for="email">
+                Correo electrónico
+            </label>
+
+            <input
+                id="email"
+                type="email"
+                formControlName="email"
+                autocomplete="email">
+
+            @if (
+                registerForm.controls['email'].touched &&
+                registerForm.controls['email'].hasError('required')
+            ) {
+                <p>
+                    El correo electrónico es obligatorio.
+                </p>
+            }
+
+            @if (
+                registerForm.controls['email'].touched &&
+                registerForm.controls['email'].hasError('email')
+            ) {
+                <p>
+                    Introduce un correo electrónico válido.
+                </p>
+            }
+        </div>
+        
+        <div>
+            <label for="password">
+                Contraseña
+            </label>
+
+            <input
+                id="password"
+                type="password"
+                formControlName="password"
+                autocomplete="new-password">
+
+            @if (
+                registerForm.controls['password'].touched &&
+                registerForm.controls['password'].hasError('required')
+            ) {
+                <p>
+                    La contraseña es obligatoria.
+                </p>
+            }
+
+            @if (
+                registerForm.controls['password'].touched &&
+                registerForm.controls['password'].hasError('minlength')
+            ) {
+                <p>
+                    La contraseña debe tener al menos 6 caracteres.
+                </p>
+            }
+        </div>
+
+        <div>
+            <label for="confirmPassword">
+                Confirmar contraseña
+            </label>
+
+            <input
+                id="confirmPassword"
+                type="password"
+                formControlName="confirmPassword"
+                autocomplete="new-password">
+
+            @if (
+                registerForm.controls['confirmPassword'].touched &&
+                registerForm.controls['confirmPassword'].hasError('required')
+            ) {
+                <p>
+                    La confirmación de la contraseña es obligatoria.
+                </p>
+            }
+
+            @if (
+                registerForm.controls['confirmPassword'].touched &&
+                registerForm.hasError('passwordMismatch')
+            ) {
+                <p>
+                    Las contraseñas no coinciden.
+                </p>
+            }
+        </div>
+
+        <button type="submit">
+            Registrarse
+        </button>
+    </form>
+        
+    <p>
+        ¿Ya tienes una cuenta?
+
+        <a routerLink="/login">
+            Inicia sesión
+        </a>
+    </p>
+</section>
