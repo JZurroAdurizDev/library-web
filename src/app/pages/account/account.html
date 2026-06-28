@@ -1,3 +1,131 @@
-<h1>Account</h1>
+<section
+    class="flex min-h-full w-full items-center justify-center bg-gradient-to-br from-slate-50 via-white to-emerald-50 px-4 py-10"
+    aria-labelledby="account-title">
 
-<p>account works!</p>
+    <div
+        class="w-full max-w-lg overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl shadow-slate-200/60">
+
+        @if (currentUser(); as user) {
+
+            <header class="px-6 pt-8 text-center sm:px-8">
+
+                <div
+                    class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+
+                    <span
+                        class="material-symbols-outlined text-3xl"
+                        aria-hidden="true">
+                        account_circle
+                    </span>
+
+                </div>
+
+                <h1
+                    id="account-title"
+                    class="text-2xl font-semibold text-slate-950">
+
+                    Mi cuenta
+
+                </h1>
+
+                <p class="mt-2 text-sm leading-6 text-slate-600">
+                    Consulta los datos asociados a tu cuenta.
+                </p>
+
+            </header>
+
+            <div class="space-y-4 px-6 py-8 sm:px-8">
+
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                        Nombre
+                    </p>
+
+                    <p class="mt-1 text-sm text-slate-900">
+                        {{ user.firstName }} {{ user.lastName }}
+                    </p>
+                </div>
+
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                        DNI
+                    </p>
+
+                    <p class="mt-1 text-sm text-slate-900">
+                        {{ user.dni }}
+                    </p>
+                </div>
+
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                        Correo electrónico
+                    </p>
+
+                    <p class="mt-1 text-sm text-slate-900">
+                        {{ user.email }}
+                    </p>
+                </div>
+
+                @if (errorMessage()) {
+                    <p
+                        class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+                        role="alert">
+
+                        {{ errorMessage() }}
+
+                    </p>
+                }
+
+                <button
+                    class="flex w-full items-center justify-center gap-2 rounded-lg bg-red-700 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-red-800 disabled:cursor-not-allowed disabled:opacity-60"
+                    type="button"
+                    [disabled]="loading()"
+                    (click)="onLogout()">
+
+                    @if (loading()) {
+                        <span>Cerrando sesión...</span>
+                    } @else {
+                        <span>Cerrar sesión</span>
+
+                        <span
+                            class="material-symbols-outlined text-xl"
+                            aria-hidden="true">
+                            logout
+                        </span>
+                    }
+
+                </button>
+
+            </div>
+
+        } @else {
+
+            <div class="px-6 py-10 text-center sm:px-8">
+
+                <h1
+                    id="account-title"
+                    class="text-2xl font-semibold text-slate-950">
+
+                    No has iniciado sesión
+
+                </h1>
+
+                <p class="mt-2 text-sm text-slate-600">
+                    Inicia sesión para acceder a los datos de tu cuenta.
+                </p>
+
+                <a
+                    class="mt-6 inline-flex items-center justify-center rounded-lg bg-emerald-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-800"
+                    routerLink="/login">
+
+                    Iniciar sesión
+
+                </a>
+
+            </div>
+
+        }
+
+    </div>
+
+</section>

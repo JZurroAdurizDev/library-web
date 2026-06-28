@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, signal } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -7,29 +8,13 @@ import {
   ValidationErrors,
   Validators
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
-/**
- * Validates that the password and password confirmation values match.
- */
-function passwordsMatchValidator(
-  control: AbstractControl
-): ValidationErrors | null {
-
-  const password: string = control.get('password')?.value;
-  const confirmPassword: string = control.get('confirmPassword')?.value;
-
-  /*
-   * Required validators are responsible for handling empty fields.
-   */
-  if (!password || !confirmPassword) {
-    return null;
-  }
-
-  return password === confirmPassword
-    ? null
-    : { passwordMismatch: true };
-}
+import { AuthResponse } from '../../models/auth.response.model';
+import { AuthenticatedUser } from '../../models/authenticated.user.model';
+import { Register as RegisterModel } from '../../models/register.model';
+import { AuthApiService } from '../../services/auth-api.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -42,10 +27,32 @@ function passwordsMatchValidator(
 })
 export class Register {
 
-  /**
-   * Registration form containing the account data and the frontend-only
-   * password confirmation field.
-   */
+  public readonly loading = signal<boolean>(false);
+
+  public readonly errorMessage = signal<string>('');
+
+  constructor(
+    private readonly _authApiService: AuthApiService,
+    private readonly _authService: AuthService,
+    private readonly _router: Router
+  ) {}
+
+  private passwordsMatchValidator(
+    control: AbstractControl
+  ): ValidationErrors | null {
+
+    const password: string = control.get('password')?.value;
+    const confirmPassword: string = control.get('confirmPassword')?.value;
+
+    if (!password || !confirmPassword) {
+      return null;
+    }
+
+    return password === confirmPassword
+      ? null
+      : { passwordMismatch: true };
+  }
+
   public registerForm = new FormGroup(
     {
       dni: new FormControl('', {
@@ -95,24 +102,88 @@ export class Register {
     },
     {
       validators: [
-        passwordsMatchValidator
+        this.passwordsMatchValidator.bind(this)
       ]
     }
   );
 
-  /**
-   * Validates the registration form before the future API request.
-   */
   public onSubmit(): void {
+    if (this.loading()) {
+      return;
+    }
+
+    this.errorMessage.set('');
 
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
       return;
     }
 
-    /*
-     * API integration and RegisterModel creation will be implemented
-     * in the authentication feature.
-     */
+    const registerData: RegisterModel = this.getRegisterData();
+
+    this.registerUser(registerData);
+  }
+
+  private getRegisterData(): RegisterModel {
+    const formValue = this.registerForm.getRawValue();
+
+    return {
+      dni: formValue.dni,
+      firstName: formValue.firstName,
+      lastName: formValue.lastName,
+      email: formValue.email,
+      password: formValue.password
+    };
+  }
+
+  private registerUser(registerData: RegisterModel): void {
+    this.loading.set(true);
+
+    this._authApiService.register(registerData).subscribe({
+      next: (response: AuthResponse) => {
+        this.startRegisteredUserSession(response.expiresIn);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.handleRegistrationError(error);
+      }
+    });
+  }
+
+  private startRegisteredUserSession(expiresIn: number): void {
+    this._authApiService.authenticatedUser().subscribe({
+      next: (user: AuthenticatedUser) => {
+        this._authService.startSession(
+          user,
+          expiresIn
+        );
+
+        this.finishRegistration();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.handleRegistrationError(error);
+      }
+    });
+  }
+
+  private finishRegistration(): void {
+    this.loading.set(false);
+    this._router.navigate(['/']);
+  }
+
+  private handleRegistrationError(error: HttpErrorResponse): void {
+    this.loading.set(false);
+
+    if (error.status === 409) {
+      this.errorMessage.set(
+        'Ya existe una cuenta con el DNI o correo electrónico introducido.'
+      );
+      return;
+    }
+
+    this.errorMessage.set(
+      'No se pudo completar el registro. Inténtalo de nuevo.'
+    );
+
+    console.error(error);
   }
 }
