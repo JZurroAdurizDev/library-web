@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { AuthResponse } from '../../models/auth.response.model';
 import { AuthenticatedUser } from '../../models/authenticated.user.model';
@@ -25,12 +25,16 @@ import { AuthService } from '../../services/auth.service';
 })
 export class Login {
 
+  public readonly loading = signal<boolean>(false);
+
   public readonly errorMessage = signal<string>('');
 
   constructor(
     private readonly _authApiService: AuthApiService,
-    private readonly _authService: AuthService
+    private readonly _authService: AuthService,
+    private readonly _router: Router
   ) {}
+
 
   public loginForm = new FormGroup({
     email: new FormControl('', {
@@ -50,6 +54,10 @@ export class Login {
   });
 
   public onSubmit(): void {
+    if (this.loading()) {
+      return;
+    }
+
     this.errorMessage.set('');
 
     if (this.loginForm.invalid) {
@@ -67,6 +75,8 @@ export class Login {
   }
 
   private loginUser(loginData: LoginModel): void {
+    this.loading.set(true);
+
     this._authApiService.login(loginData).subscribe({
       next: (response: AuthResponse) => {
         this.startAuthenticatedUserSession(response.expiresIn);
@@ -84,6 +94,8 @@ export class Login {
           user,
           expiresIn
         );
+
+        this.finishLogin();
       },
       error: (error: HttpErrorResponse) => {
         this.handleLoginError(error);
@@ -91,13 +103,24 @@ export class Login {
     });
   }
 
+  private finishLogin(): void {
+    this.loading.set(false);
+    this._router.navigate(['/']);
+  }
+
   private handleLoginError(error: HttpErrorResponse): void {
+    this.loading.set(false);
+
     if (error.status === 401) {
-      this.errorMessage.set('Correo electrónico o contraseña incorrectos.');
+      this.errorMessage.set(
+        'Correo electrónico o contraseña incorrectos.'
+      );
       return;
     }
 
-    this.errorMessage.set('No se pudo iniciar sesión. Inténtalo de nuevo.');
+    this.errorMessage.set(
+      'No se pudo iniciar sesión. Inténtalo de nuevo.'
+    );
 
     console.error(error);
   }

@@ -1,7 +1,14 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Component, signal } from '@angular/core';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators
+} from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 
 import { AuthResponse } from '../../models/auth.response.model';
 import { AuthenticatedUser } from '../../models/authenticated.user.model';
@@ -20,9 +27,14 @@ import { AuthService } from '../../services/auth.service';
 })
 export class Register {
 
+  public readonly loading = signal<boolean>(false);
+
+  public readonly errorMessage = signal<string>('');
+
   constructor(
     private readonly _authApiService: AuthApiService,
-    private readonly _authService: AuthService
+    private readonly _authService: AuthService,
+    private readonly _router: Router
   ) {}
 
   private passwordsMatchValidator(
@@ -96,6 +108,12 @@ export class Register {
   );
 
   public onSubmit(): void {
+    if (this.loading()) {
+      return;
+    }
+
+    this.errorMessage.set('');
+
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
       return;
@@ -119,6 +137,8 @@ export class Register {
   }
 
   private registerUser(registerData: RegisterModel): void {
+    this.loading.set(true);
+
     this._authApiService.register(registerData).subscribe({
       next: (response: AuthResponse) => {
         this.startRegisteredUserSession(response.expiresIn);
@@ -136,6 +156,8 @@ export class Register {
           user,
           expiresIn
         );
+
+        this.finishRegistration();
       },
       error: (error: HttpErrorResponse) => {
         this.handleRegistrationError(error);
@@ -143,7 +165,25 @@ export class Register {
     });
   }
 
+  private finishRegistration(): void {
+    this.loading.set(false);
+    this._router.navigate(['/']);
+  }
+
   private handleRegistrationError(error: HttpErrorResponse): void {
+    this.loading.set(false);
+
+    if (error.status === 409) {
+      this.errorMessage.set(
+        'Ya existe una cuenta con el DNI o correo electrónico introducido.'
+      );
+      return;
+    }
+
+    this.errorMessage.set(
+      'No se pudo completar el registro. Inténtalo de nuevo.'
+    );
+
     console.error(error);
   }
 }
