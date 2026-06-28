@@ -19,10 +19,18 @@
             </span>
         </button>
 
-        <a routerLink="/login" aria-label="Iniciar sesión">
+        <a
+            [routerLink]="authService.isLoggedIn() ? '/account' : '/login'"
+            [attr.aria-label]="
+                authService.isLoggedIn()
+                    ? 'Mi cuenta'
+                    : 'Iniciar sesión'
+            ">
+
             <span class="material-symbols-outlined">
                 account_circle
             </span>
+
         </a>
 
     </div>
