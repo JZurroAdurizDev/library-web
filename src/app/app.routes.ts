@@ -6,57 +6,69 @@ import { AuthenticatedLayout } from './layout/authenticated-layout/authenticated
 import { Home } from './pages/home/home';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
+import { Dashboard } from './pages/dashboard/dashboard';
 import { Books } from './pages/books/books';
 import { MyLoans } from './pages/my-loans/my-loans';
 import { Account } from './pages/account/account';
 import { AdminDashboard } from './pages/admin-dashboard/admin-dashboard';
 
-export const routes: Routes = [
+import { authGuard } from './guards/auth.guard';
+import { guestGuard } from './guards/guest.guard';
+import { adminGuard } from './guards/admin.guard';
 
+export const routes: Routes = [
     {
         path: '',
         component: PublicLayout,
         children: [
-            {
-                path: '',
-                redirectTo: 'home',
-                pathMatch: 'full'
-            },
-            {
-                path: 'home',
-                component: Home
-            },
-            {
-                path: 'login',
-                component: Login
-            },
-            {
-                path: 'register',
-                component: Register
-            }
+        {
+            path: '',
+            redirectTo: 'home',
+            pathMatch: 'full'
+        },
+        {
+            path: 'home',
+            component: Home
+        },
+        {
+            path: 'login',
+            component: Login,
+            canActivate: [guestGuard]
+        },
+        {
+            path: 'register',
+            component: Register,
+            canActivate: [guestGuard]
+        }
         ]
     },
 
     {
-        path: '',
+        path: 'dashboard',
         component: AuthenticatedLayout,
+        canActivateChild: [authGuard],
         children: [
-            {
-                path: 'books',
-                component: Books
-            },
-            {
-                path: 'my-loans',
-                component: MyLoans
-            },
-            {
-                path: 'account',
-                component: Account
-            },
-            {
-                path: 'admin',
-                component: AdminDashboard
-            }
+        {
+            path: '',
+            component: Dashboard
+        },
+        {
+            path: 'books',
+            component: Books
+        },
+        {
+            path: 'my-loans',
+            component: MyLoans
+        },
+        {
+            path: 'account',
+            component: Account
+        },
+        {
+            path: 'admin',
+            component: AdminDashboard,
+            canActivate: [adminGuard]
+        }
         ]
     },
 
