@@ -105,7 +105,7 @@ export class Login {
 
   private finishLogin(): void {
     this.loading.set(false);
-    this._router.navigate(['/']);
+    this._router.navigate(['/dashboard']);
   }
 
   private handleLoginError(error: HttpErrorResponse): void {

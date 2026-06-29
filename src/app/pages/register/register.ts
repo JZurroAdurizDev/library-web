@@ -167,7 +167,7 @@ export class Register {
 
   private finishRegistration(): void {
     this.loading.set(false);
-    this._router.navigate(['/']);
+    this._router.navigate(['/dashboard']);
   }
 
   private handleRegistrationError(error: HttpErrorResponse): void {
