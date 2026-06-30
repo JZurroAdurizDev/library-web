@@ -1,4 +1,82 @@
-<aside>
+<aside aria-label="Navegación principal">
+
     <nav>
+
+        <a
+            routerLink="/dashboard"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }">
+
+            <span
+                class="material-symbols-outlined"
+                aria-hidden="true">
+                home
+            </span>
+
+            <span>Inicio</span>
+
+        </a>
+
+        <a
+            routerLink="/dashboard/books"
+            routerLinkActive="active">
+
+            <span
+                class="material-symbols-outlined"
+                aria-hidden="true">
+                menu_book
+            </span>
+
+            <span>Catálogo</span>
+
+        </a>
+
+        <a
+            routerLink="/dashboard/my-loans"
+            routerLinkActive="active">
+
+            <span
+                class="material-symbols-outlined"
+                aria-hidden="true">
+                book_2
+            </span>
+
+            <span>Mis préstamos</span>
+
+        </a>
+
+        <a
+            routerLink="/dashboard/account"
+            routerLinkActive="active">
+
+            <span
+                class="material-symbols-outlined"
+                aria-hidden="true">
+                account_circle
+            </span>
+
+            <span>Mi cuenta</span>
+
+        </a>
+
+        @if (currentUser()?.role === 'ADMIN') {
+
+            <a
+                routerLink="/dashboard/admin"
+                routerLinkActive="active">
+
+                <span
+                    class="material-symbols-outlined"
+                    aria-hidden="true">
+                    admin_panel_settings
+                </span>
+
+                <span>Administración</span>
+
+            </a>
+
+        }
+
     </nav>
+
 </aside>
