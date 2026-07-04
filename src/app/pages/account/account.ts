@@ -3,7 +3,7 @@ import {
   Component, Signal, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
-import { AuthenticatedUser } from '../../models/authenticated.user.model';
+import { AuthenticatedUser } from '../../models/auth/authenticated.user.model';
 import { AuthApiService } from '../../services/auth-api.service';
 import { AuthService } from '../../services/auth.service';
 

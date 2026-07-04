@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 
-import { AuthenticatedUser } from '../models/authenticated.user.model';
+import { AuthenticatedUser } from '../models/auth/authenticated.user.model';
 
 @Injectable({
   providedIn: 'root'

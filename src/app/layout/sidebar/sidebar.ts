@@ -4,7 +4,7 @@ import {
   RouterLinkActive
 } from '@angular/router';
 
-import { AuthenticatedUser } from '../../models/authenticated.user.model';
+import { AuthenticatedUser } from '../../models/auth/authenticated.user.model';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
