@@ -5,7 +5,7 @@ import {
 } from '@angular/router';
 
 import { AuthenticatedUser } from '../../models/auth/authenticated.user.model';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-sidebar',
