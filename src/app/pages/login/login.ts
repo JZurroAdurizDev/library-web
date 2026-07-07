@@ -11,8 +11,8 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthResponse } from '../../models/auth/auth.response.model';
 import { AuthenticatedUser } from '../../models/auth/authenticated.user.model';
 import { Login as LoginModel } from '../../models/auth/login.model';
-import { AuthApiService } from '../../services/auth-api.service';
-import { AuthService } from '../../services/auth.service';
+import { AuthApiService } from '../../services/auth/auth-api.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-login',
