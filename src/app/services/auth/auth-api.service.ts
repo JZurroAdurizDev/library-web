@@ -2,13 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 
-import { AuthResponse } from '../models/auth.response.model';
-import { AuthenticatedUser } from '../models/authenticated.user.model';
-import { Login } from '../models/login.model';
-import { Logout } from '../models/logout.model';
-import { Register } from '../models/register.model';
+import { AuthResponse } from '../../models/auth/auth.response.model';
+import { AuthenticatedUser } from '../../models/auth/authenticated.user.model';
+import { Login } from '../../models/auth/login.model';
+import { Logout } from '../../models/auth/logout.model';
+import { Register } from '../../models/auth/register.model';
 
 @Injectable({
   providedIn: 'root'
