@@ -11,6 +11,7 @@ import { TermsAndConditions } from './pages/terms-and-conditions/terms-and-condi
 import { CookiePolicy } from './pages/cookie-policy/cookie-policy';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { Books } from './pages/books/books';
+import { BookDetails } from './pages/book-details/book-details';
 import { MyLoans } from './pages/my-loans/my-loans';
 import { Account } from './pages/account/account';
 import { AdminDashboard } from './pages/admin-dashboard/admin-dashboard';
@@ -72,6 +73,10 @@ export const routes: Routes = [
                 path: 'books',
                 component: Books
             },
+            {
+                path: 'books/:id',
+                component: BookDetails
+                },
             {
                 path: 'my-loans',
                 component: MyLoans
