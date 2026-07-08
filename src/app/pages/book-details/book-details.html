@@ -1,0 +1,74 @@
+<section>
+
+    <a routerLink="/dashboard/books">
+        Volver al catálogo
+    </a>
+
+    @if (loading()) {
+        <section aria-label="Cargando detalle del libro">
+            <h1>Cargando libro</h1>
+
+            <p>
+                Estamos recuperando la información del libro seleccionado.
+            </p>
+        </section>
+    } @else if (invalidBookId()) {
+        <section aria-label="Identificador de libro no válido">
+            <article>
+                <p>Error de navegación</p>
+
+                <h1>Libro no válido</h1>
+
+                <p>
+                    No se ha podido identificar el libro seleccionado.
+                </p>
+            </article>
+        </section>
+    } @else if (error()) {
+        <section aria-label="Error al cargar el libro">
+            <article>
+                <p>Error de carga</p>
+
+                <h1>No se pudo cargar el libro</h1>
+
+                <p>
+                    Ha ocurrido un problema al recuperar la información del libro.
+                    Puedes intentarlo de nuevo en unos momentos.
+                </p>
+
+                <button type="button" (click)="loadBookDetails()">
+                    Reintentar
+                </button>
+            </article>
+        </section>
+    } @else if (selectedBook(); as book) {
+        <section aria-label="Detalle del libro">
+            <article>
+                <p>Detalle del libro</p>
+
+                <h1>{{ book.title }}</h1>
+
+                <p>
+                    {{ book.author }}
+                </p>
+
+                <section aria-label="Información bibliográfica">
+                    <h2>Información bibliográfica</h2>
+
+                    <p>
+                        ISBN: {{ book.isbn }}
+                    </p>
+
+                    <p>
+                        Año de publicación: {{ book.publishedYear }}
+                    </p>
+
+                    <p>
+                        Páginas: {{ book.pages }}
+                    </p>
+                </section>
+            </article>
+        </section>
+    }
+
+</section>
