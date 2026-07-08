@@ -1,10 +1,13 @@
 import { Component, computed, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { BookService } from '../../services/book/book.service';
 
 @Component({
   selector: 'app-books',
-  imports: [],
+  imports: [
+    RouterLink
+  ],
   templateUrl: './books.html',
   styleUrl: './books.css',
 })
@@ -35,9 +38,7 @@ export class Books {
     return this.books().slice(startIndex, endIndex);
   });
 
-  constructor(
-    private readonly _bookService: BookService
-  ) {
+  constructor(private readonly _bookService: BookService) {
     this.books = this._bookService.books;
     this.loading = this._bookService.loading;
     this.error = this._bookService.error;
