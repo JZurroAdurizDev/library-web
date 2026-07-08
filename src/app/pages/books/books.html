@@ -1,2 +1,98 @@
-<!-- books.html -->
-<h1>Books</h1>
+<section>
+
+    <section>
+        <p>Catálogo</p>
+
+        <h1>Catálogo de libros</h1>
+
+        <p>
+            Consulta los libros disponibles en la biblioteca.
+        </p>
+    </section>
+
+    @if (loading()) {
+        <section aria-label="Cargando catálogo de libros">
+            <h2>Cargando catálogo</h2>
+
+            <p>
+                Estamos recuperando los libros disponibles.
+            </p>
+        </section>
+    } @else if (error()) {
+        <section aria-label="Error al cargar el catálogo">
+            <article>
+                <p>Error de carga</p>
+
+                <h2>No se pudo cargar el catálogo</h2>
+
+                <p>
+                    Ha ocurrido un problema al recuperar los libros disponibles.
+                    Puedes intentarlo de nuevo en unos momentos.
+                </p>
+
+                <button type="button" (click)="loadBooks()">
+                    Reintentar
+                </button>
+            </article>
+        </section>
+    } @else if (books().length === 0) {
+        <section aria-label="Catálogo vacío">
+            <article>
+                <p>Sin libros registrados</p>
+
+                <h2>No hay libros disponibles</h2>
+
+                <p>
+                    Cuando se registren libros en la biblioteca, aparecerán en este catálogo.
+                </p>
+            </article>
+        </section>
+    } @else {
+        <section aria-label="Listado de libros">
+            <h2>Libros disponibles</h2>
+
+            <p>
+                Actualmente hay {{ books().length }} libros registrados en el catálogo.
+            </p>
+
+            <section>
+                @for (book of paginatedBooks(); track book.bookId) {
+                    <article>
+                        <h3>{{ book.title }}</h3>
+
+                        <p>
+                            Autor: {{ book.author }}
+                        </p>
+
+                        <p>
+                            ISBN: {{ book.isbn }}
+                        </p>
+
+                        <p>
+                            Año de publicación: {{ book.publishedYear }}
+                        </p>
+
+                        <p>
+                            Páginas: {{ book.pages }}
+                        </p>
+                    </article>
+                }
+            </section>
+
+            <nav aria-label="Paginación del catálogo">
+                <button type="button" (click)="previousPage()" [disabled]="currentPage() === 1">
+                    Anterior
+                </button>
+
+                <p>
+                    Página {{ currentPage() }} de {{ totalPages() }}
+                </p>
+
+                <button type="button" (click)="nextPage()" [disabled]="currentPage() === totalPages()">
+                    Siguiente
+                </button>
+            </nav>
+        </section>
+    }
+
+</section>
