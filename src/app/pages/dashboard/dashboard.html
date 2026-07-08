@@ -1,1 +1,107 @@
-<p>dashboard works!</p>
+<section>
+
+    <section>
+        <p>Panel principal</p>
+
+        <h1>
+            Bienvenido, {{ currentUser()?.firstName }} {{ currentUser()?.lastName }}
+        </h1>
+
+        <p>
+            Consulta un resumen de tu actividad reciente de préstamos.
+        </p>
+    </section>
+
+    @if (loading()) {
+        <section aria-label="Cargando información del dashboard">
+            <h2>Cargando información</h2>
+
+            <p>
+                Estamos recuperando tus préstamos y libros recientes.
+            </p>
+        </section>
+    } @else if (error()) {
+        <section aria-label="Error al cargar el dashboard">
+            <article>
+                <p>Error de carga</p>
+
+                <h2>No se pudo cargar tu actividad</h2>
+
+                <p>
+                    Ha ocurrido un problema al recuperar tus préstamos. Puedes intentarlo de nuevo
+                    en unos momentos.
+                </p>
+
+                <button type="button" (click)="loadDashboardData()">
+                    Reintentar
+                </button>
+            </article>
+        </section>
+    } @else if (loans().length === 0) {
+        <section aria-label="Sin préstamos registrados">
+            <article>
+                <p>Sin actividad registrada</p>
+
+                <h2>Aún no tienes préstamos</h2>
+
+                <p>
+                    Cuando realices tu primer préstamo, aquí aparecerá un resumen de tu actividad
+                    y tus libros prestados más recientemente.
+                </p>
+            </article>
+        </section>
+    } @else {
+        <section aria-label="Resumen de préstamos">
+            <article>
+                <h2>Total de préstamos realizados</h2>
+
+                <p>
+                    {{ totalLoans() }}
+                </p>
+
+                <p>
+                    Préstamos asociados a tu cuenta.
+                </p>
+            </article>
+        </section>
+
+        <section aria-label="Libros prestados recientemente">
+            <h2>Libros prestados recientemente</h2>
+
+            <p>
+                Estos libros proceden de tus préstamos más recientes.
+            </p>
+
+            @if (recentBooks().length === 0) {
+                <article>
+                    <h3>No hay libros recientes para mostrar</h3>
+
+                    <p>
+                        Tus libros recientes aparecerán aquí cuando existan préstamos con libros asociados.
+                    </p>
+                </article>
+            } @else {
+                <section>
+                    @for (book of recentBooks(); track book.bookId) {
+                        <article>
+                            <h3>{{ book.title }}</h3>
+
+                            <p>
+                                Autor: {{ book.author }}
+                            </p>
+
+                            <p>
+                                ISBN: {{ book.isbn }}
+                            </p>
+
+                            <p>
+                                Año de publicación: {{ book.publishedYear }}
+                            </p>
+                        </article>
+                    }
+                </section>
+            }
+        </section>
+    }
+
+</section>
