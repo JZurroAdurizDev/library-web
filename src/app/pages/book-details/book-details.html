@@ -1,4 +1,4 @@
-<section class="space-y-6 px-6 py-6">
+<section class="space-y-5 px-6 py-5">
 
     <a
         routerLink="/dashboard/books"
@@ -10,7 +10,7 @@
     @if (loading()) {
         <section
             aria-label="Cargando detalle del libro"
-            class="space-y-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+            class="mx-auto max-w-6xl space-y-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
         >
             <div>
                 <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-teal-700">
@@ -26,9 +26,9 @@
                 </p>
             </div>
 
-            <article class="grid gap-6 lg:grid-cols-[220px_1fr]">
+            <article class="grid gap-5 lg:grid-cols-[220px_1fr]">
                 <div class="animate-pulse rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-                    <div class="aspect-[5/6] rounded-lg bg-slate-100"></div>
+                    <div class="aspect-[4/5] rounded-lg bg-slate-100"></div>
                 </div>
 
                 <div class="animate-pulse rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -36,10 +36,10 @@
                     <div class="mb-4 h-8 w-3/4 rounded bg-slate-200"></div>
                     <div class="mb-8 h-4 w-1/2 rounded bg-slate-100"></div>
 
-                    <div class="space-y-4">
-                        <div class="h-12 rounded bg-slate-100"></div>
-                        <div class="h-12 rounded bg-slate-100"></div>
-                        <div class="h-12 rounded bg-slate-100"></div>
+                    <div class="grid gap-3 sm:grid-cols-3">
+                        <div class="h-24 rounded bg-slate-100"></div>
+                        <div class="h-24 rounded bg-slate-100"></div>
+                        <div class="h-24 rounded bg-slate-100"></div>
                     </div>
                 </div>
             </article>
@@ -47,7 +47,7 @@
     } @else if (invalidBookId()) {
         <section
             aria-label="Identificador de libro no válido"
-            class="rounded-xl border border-red-200 bg-white p-8 shadow-sm"
+            class="mx-auto max-w-6xl rounded-xl border border-red-200 bg-white p-8 shadow-sm"
         >
             <article class="mx-auto max-w-2xl text-center">
                 <div class="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-700">
@@ -70,7 +70,7 @@
     } @else if (error()) {
         <section
             aria-label="Error al cargar el libro"
-            class="rounded-xl border border-red-200 bg-white p-8 shadow-sm"
+            class="mx-auto max-w-6xl rounded-xl border border-red-200 bg-white p-8 shadow-sm"
         >
             <article class="mx-auto max-w-2xl text-center">
                 <div class="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-700">
@@ -102,26 +102,26 @@
     } @else if (selectedBook(); as book) {
         <section
             aria-label="Detalle del libro"
-            class="grid gap-6 lg:grid-cols-[260px_1fr]"
+            class="mx-auto grid max-w-6xl gap-5 lg:grid-cols-[220px_1fr]"
         >
             <article class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-                <div class="flex aspect-[5/6] flex-col justify-between bg-slate-950 p-5 text-white">
+                <div class="flex aspect-[4/5] flex-col justify-between bg-slate-950 p-4 text-white">
                     <div>
                         <p class="text-xs font-semibold uppercase tracking-wide text-teal-300">
                             Library Web
                         </p>
 
-                        <h2 class="mt-8 line-clamp-4 text-xl font-semibold leading-7">
+                        <h2 class="mt-6 line-clamp-4 text-lg font-semibold leading-6">
                             {{ book.title }}
                         </h2>
                     </div>
 
                     <div>
-                        <p class="line-clamp-2 text-sm leading-6 text-slate-300">
+                        <p class="line-clamp-2 text-xs leading-5 text-slate-300">
                             {{ book.author }}
                         </p>
 
-                        <p class="mt-4 text-xs font-medium uppercase tracking-wide text-slate-400">
+                        <p class="mt-3 text-[11px] font-medium uppercase tracking-wide text-slate-400">
                             {{ book.publishedYear }}
                         </p>
                     </div>
@@ -133,24 +133,24 @@
                     Detalle del libro
                 </p>
 
-                <h1 class="text-3xl font-semibold tracking-tight text-slate-950">
+                <h1 class="max-w-4xl text-2xl font-semibold tracking-tight text-slate-950">
                     {{ book.title }}
                 </h1>
 
-                <p class="mt-3 text-base leading-7 text-slate-600">
+                <p class="mt-2 text-sm leading-6 text-slate-600">
                     {{ book.author }}
                 </p>
 
                 <section
                     aria-label="Información bibliográfica"
-                    class="mt-8 rounded-xl border border-slate-200 bg-slate-50 p-5"
+                    class="mt-6"
                 >
-                    <h2 class="text-lg font-semibold text-slate-950">
+                    <h2 class="text-base font-semibold text-slate-950">
                         Información bibliográfica
                     </h2>
 
-                    <div class="mt-5 grid gap-4 sm:grid-cols-2">
-                        <div class="rounded-lg border border-slate-200 bg-white p-4">
+                    <div class="mt-4 grid gap-3 sm:grid-cols-3">
+                        <div class="rounded-lg border border-slate-200 bg-slate-50 p-4">
                             <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
                                 ISBN
                             </p>
@@ -160,9 +160,9 @@
                             </p>
                         </div>
 
-                        <div class="rounded-lg border border-slate-200 bg-white p-4">
+                        <div class="rounded-lg border border-slate-200 bg-slate-50 p-4">
                             <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
-                                Año de publicación
+                                Año
                             </p>
 
                             <p class="mt-2 text-sm font-semibold text-slate-950">
@@ -170,7 +170,7 @@
                             </p>
                         </div>
 
-                        <div class="rounded-lg border border-slate-200 bg-white p-4">
+                        <div class="rounded-lg border border-slate-200 bg-slate-50 p-4">
                             <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
                                 Páginas
                             </p>
@@ -182,16 +182,10 @@
                     </div>
                 </section>
 
-                <section class="mt-6 rounded-xl border border-slate-200 bg-white p-5">
-                    <h2 class="text-lg font-semibold text-slate-950">
-                        Registro disponible
-                    </h2>
-
-                    <p class="mt-3 text-sm leading-6 text-slate-600">
-                        La información mostrada corresponde a los datos bibliográficos
-                        disponibles actualmente en el catálogo.
-                    </p>
-                </section>
+                <p class="mt-6 border-t border-slate-200 pt-4 text-sm leading-6 text-slate-600">
+                    La información mostrada corresponde a los datos bibliográficos disponibles
+                    actualmente en el catálogo.
+                </p>
             </article>
         </section>
     }
