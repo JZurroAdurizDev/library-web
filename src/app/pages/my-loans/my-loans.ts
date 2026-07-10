@@ -1,4 +1,5 @@
 import { Component, computed, signal } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { AuthService } from '../../services/auth/auth.service';
 import { LoanService } from '../../services/loan/loan.service';
@@ -25,7 +26,8 @@ export class MyLoans {
 
   constructor(
     private readonly _authService: AuthService,
-    private readonly _loanService: LoanService
+    private readonly _loanService: LoanService,
+    private readonly _router: Router
   ) {
     this.currentUser = this._authService.currentUser;
     this.loans = this._loanService.loans;
@@ -41,7 +43,10 @@ export class MyLoans {
     this.closedLoans = computed(() =>
       this.loans().filter((loan) => loan.status === 'CLOSED').length
     );
+  }
 
+
+  public ngOnInit(): void {
     this.loadUserLoans();
   }
 
@@ -58,6 +63,10 @@ export class MyLoans {
     this._loanService.searchLoans({
       userId: user.id,
     });
+  }
+
+  public navigateToNewLoan(): void {
+    this._router.navigate(['/dashboard/my-loans/new']);
   }
 
   public getLoanStatusText(status: LoanStatus): string {

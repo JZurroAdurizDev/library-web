@@ -143,6 +143,7 @@
                 <button
                     type="button"
                     class="mt-6 rounded bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2"
+                    (click)="navigateToNewLoan()"
                 >
                     Nuevo préstamo
                 </button>
@@ -291,9 +292,9 @@
                                     Este préstamo no tiene libros asociados.
                                 </p>
                             } @else {
-                                <ul class="mt-3 divide-y divide-slate-200">
+                                <div class="mt-3 divide-y divide-slate-200">
                                     @for (book of loan.books; track book.bookId) {
-                                        <li class="py-3 first:pt-0 last:pb-0">
+                                        <article class="py-3 first:pt-0 last:pb-0">
                                             <p class="text-sm font-semibold text-slate-950">
                                                 {{ book.title }}
                                             </p>
@@ -301,9 +302,9 @@
                                             <p class="mt-1 text-xs text-slate-600">
                                                 {{ book.author }}
                                             </p>
-                                        </li>
+                                        </article>
                                     }
-                                </ul>
+                                </div>
                             }
                         </section>
                     </article>
