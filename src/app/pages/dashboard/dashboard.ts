@@ -37,7 +37,9 @@ export class Dashboard {
 
       return this.getUniqueBooksFromLoans(recentLoans).slice(0, 5);
     });
+  }
 
+  ngOnInit(): void {
     this.loadDashboardData();
   }
 

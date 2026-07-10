@@ -42,7 +42,9 @@ export class Books {
     this.books = this._bookService.books;
     this.loading = this._bookService.loading;
     this.error = this._bookService.error;
+  }
 
+  ngOnInit(): void {
     this.loadBooks();
   }
 
