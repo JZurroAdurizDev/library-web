@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 
 import { LoanApiService } from './loan-api.service';
 import { Loan } from '../../models/loan/loan.model';
+import { LoanRequest } from '../../models/loan/loan.request.model';
 import { LoanSearchParams } from '../../models/loan/loan.search.params.model';
 
 @Injectable({
@@ -30,6 +31,10 @@ export class LoanService {
     this.handleLoansRequest(
       this._loanApiService.searchLoans(searchParams)
     );
+  }
+
+  public createLoan(loanData: LoanRequest): Observable<Loan> {
+    return this._loanApiService.createLoan(loanData);
   }
 
   private handleLoansRequest(loansRequest$: Observable<Loan[]>): void {
