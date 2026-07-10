@@ -13,6 +13,7 @@ import { Dashboard } from './pages/dashboard/dashboard';
 import { Books } from './pages/books/books';
 import { BookDetails } from './pages/book-details/book-details';
 import { MyLoans } from './pages/my-loans/my-loans';
+import { NewLoan } from './pages/new-loan/new-loan';
 import { Account } from './pages/account/account';
 import { AdminDashboard } from './pages/admin-dashboard/admin-dashboard';
 import { NotFound } from './pages/not-found/not-found';
@@ -80,6 +81,10 @@ export const routes: Routes = [
             {
                 path: 'my-loans',
                 component: MyLoans
+            },
+            {
+            path: 'my-loans/new',
+            component: NewLoan
             },
             {
                 path: 'account',

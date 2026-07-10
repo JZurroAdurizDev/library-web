@@ -1,0 +1,173 @@
+<section>
+
+    <section>
+        <p>Nuevo préstamo</p>
+
+        <h1>Nuevo préstamo</h1>
+
+        <p>
+            Selecciona uno o varios libros del catálogo para crear un nuevo préstamo.
+            La fecha límite de devolución será de 30 días desde hoy.
+        </p>
+
+        <button type="button" (click)="cancel()">
+            Cancelar
+        </button>
+    </section>
+
+    @if (loading()) {
+        <section aria-label="Cargando catálogo">
+            <h2>Cargando libros</h2>
+
+            <p>
+                Estamos recuperando los libros disponibles para el préstamo.
+            </p>
+        </section>
+    } @else if (missingUser()) {
+        <section aria-label="Usuario no disponible">
+            <article>
+                <p>Error de sesión</p>
+
+                <h2>No se pudo identificar el usuario</h2>
+
+                <p>
+                    No hemos podido recuperar los datos del usuario autenticado.
+                    Vuelve a iniciar sesión e inténtalo de nuevo.
+                </p>
+            </article>
+        </section>
+    } @else if (error()) {
+        <section aria-label="Error al cargar libros">
+            <article>
+                <p>Error de carga</p>
+
+                <h2>No se pudieron cargar los libros</h2>
+
+                <p>
+                    Ha ocurrido un problema al recuperar el catálogo de libros.
+                    Puedes intentarlo de nuevo en unos momentos.
+                </p>
+
+                <button type="button" (click)="loadBooks()">
+                    Reintentar
+                </button>
+            </article>
+        </section>
+    } @else if (books().length === 0) {
+        <section aria-label="Catálogo vacío">
+            <article>
+                <p>Sin libros disponibles</p>
+
+                <h2>No hay libros para prestar</h2>
+
+                <p>
+                    Cuando haya libros registrados en el catálogo, podrás seleccionarlos
+                    para crear un préstamo.
+                </p>
+            </article>
+        </section>
+    } @else {
+        <section aria-label="Resumen del préstamo">
+            <h2>Resumen del préstamo</h2>
+
+            <p>
+                Fecha de inicio: {{ startDate() }}
+            </p>
+
+            <p>
+                Fecha límite de devolución: {{ dueDate() }}
+            </p>
+
+            <p>
+                Libros seleccionados: {{ selectedBooks().length }}
+            </p>
+
+            @if (creationError()) {
+                <article>
+                    <p>Error al crear el préstamo</p>
+
+                    <p>
+                        Ha ocurrido un problema al registrar el préstamo.
+                        Puedes intentarlo de nuevo en unos momentos.
+                    </p>
+                </article>
+            }
+
+            @if (selectedBooks().length === 0) {
+                <p>
+                    Selecciona al menos un libro para poder confirmar el préstamo.
+                </p>
+            } @else {
+                <section aria-label="Libros seleccionados">
+                    <h3>Libros seleccionados</h3>
+
+                    <div>
+                        @for (book of selectedBooks(); track book.bookId) {
+                            <article>
+                                <strong>{{ book.title }}</strong>
+                                <span> — {{ book.author }}</span>
+
+                                <button type="button" (click)="removeSelectedBook(book.bookId)">
+                                    Quitar
+                                </button>
+                            </article>
+                        }
+                    </div>
+                </section>
+            }
+
+            <button
+                type="button"
+                (click)="createLoan()"
+                [disabled]="!hasSelectedBooks() || creatingLoan()"
+            >
+                @if (creatingLoan()) {
+                    Creando préstamo...
+                } @else {
+                    Confirmar préstamo
+                }
+            </button>
+        </section>
+
+        <section aria-label="Selección de libros">
+            <h2>Seleccionar libros</h2>
+
+            <p>
+                Marca los libros que quieres incluir en el préstamo.
+            </p>
+
+            <section>
+                @for (book of books(); track book.bookId) {
+                    <article>
+                        <h3>{{ book.title }}</h3>
+
+                        <p>
+                            Autor: {{ book.author }}
+                        </p>
+
+                        <p>
+                            ISBN: {{ book.isbn }}
+                        </p>
+
+                        <p>
+                            Año de publicación: {{ book.publishedYear }}
+                        </p>
+
+                        <p>
+                            Páginas: {{ book.pages }}
+                        </p>
+
+                        <button type="button" (click)="toggleBookSelection(book)">
+                            @if (isBookSelected(book.bookId)) {
+                                Quitar de la selección
+                            } @else {
+                                Añadir al préstamo
+                            }
+                        </button>
+                    </article>
+                }
+            </section>
+        </section>
+    }
+
+</section>
