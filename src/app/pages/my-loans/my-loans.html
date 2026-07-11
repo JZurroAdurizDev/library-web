@@ -1,2 +1,369 @@
-<!-- my-loans.html -->
-<h1>My Loans</h1>
+<section class="space-y-6 px-6 py-6">
+
+    <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
+            Mis préstamos
+        </p>
+
+        <h1 class="text-2xl font-semibold tracking-tight text-slate-950">
+            Mis préstamos
+        </h1>
+
+        <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
+            Consulta los préstamos asociados a tu cuenta y revisa los libros incluidos
+            en cada uno de ellos.
+        </p>
+    </section>
+
+    @if (loading()) {
+        <section
+            aria-label="Cargando préstamos"
+            class="space-y-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+        >
+            <div>
+                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
+                    Cargando
+                </p>
+
+                <h2 class="text-xl font-semibold tracking-tight text-slate-950">
+                    Cargando préstamos
+                </h2>
+
+                <p class="mt-3 text-sm leading-6 text-slate-600">
+                    Estamos recuperando tus préstamos.
+                </p>
+            </div>
+
+            <section class="grid gap-4 md:grid-cols-3">
+                <article class="animate-pulse rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <div class="mb-4 h-4 w-32 rounded bg-slate-200"></div>
+                    <div class="h-8 w-16 rounded bg-slate-200"></div>
+                </article>
+
+                <article class="animate-pulse rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <div class="mb-4 h-4 w-32 rounded bg-slate-200"></div>
+                    <div class="h-8 w-16 rounded bg-slate-200"></div>
+                </article>
+
+                <article class="animate-pulse rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <div class="mb-4 h-4 w-32 rounded bg-slate-200"></div>
+                    <div class="h-8 w-16 rounded bg-slate-200"></div>
+                </article>
+            </section>
+
+            <article class="animate-pulse rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div class="mb-4 h-5 w-56 rounded bg-slate-200"></div>
+
+                <div class="space-y-4">
+                    <div class="h-20 rounded bg-slate-100"></div>
+                    <div class="h-20 rounded bg-slate-100"></div>
+                    <div class="h-20 rounded bg-slate-100"></div>
+                </div>
+            </article>
+        </section>
+    } @else if (missingUser()) {
+        <section
+            aria-label="Usuario no disponible"
+            class="rounded-xl border border-red-200 bg-white p-8 shadow-sm"
+        >
+            <article class="mx-auto max-w-2xl text-center">
+                <div class="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-700">
+                    !
+                </div>
+
+                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-red-700">
+                    Error de sesión
+                </p>
+
+                <h2 class="text-2xl font-semibold tracking-tight text-slate-950">
+                    No se pudo identificar el usuario
+                </h2>
+
+                <p class="mt-3 text-sm leading-6 text-slate-600">
+                    No hemos podido recuperar los datos del usuario autenticado.
+                    Vuelve a iniciar sesión e inténtalo de nuevo.
+                </p>
+            </article>
+        </section>
+    } @else if (error()) {
+        <section
+            aria-label="Error al cargar los préstamos"
+            class="rounded-xl border border-red-200 bg-white p-8 shadow-sm"
+        >
+            <article class="mx-auto max-w-2xl text-center">
+                <div class="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-700">
+                    !
+                </div>
+
+                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-red-700">
+                    Error de carga
+                </p>
+
+                <h2 class="text-2xl font-semibold tracking-tight text-slate-950">
+                    No se pudieron cargar tus préstamos
+                </h2>
+
+                <p class="mt-3 text-sm leading-6 text-slate-600">
+                    Ha ocurrido un problema al recuperar tus préstamos.
+                    Puedes intentarlo de nuevo en unos momentos.
+                </p>
+
+                <button
+                    type="button"
+                    class="mt-6 rounded bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2"
+                    (click)="loadUserLoans()"
+                >
+                    Reintentar
+                </button>
+            </article>
+        </section>
+    } @else if (loans().length === 0) {
+        <section
+            aria-label="Sin préstamos registrados"
+            class="rounded-xl border border-slate-200 bg-white p-8 shadow-sm"
+        >
+            <article class="mx-auto max-w-2xl text-center">
+                <div class="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                    📚
+                </div>
+
+                @if (hasPendingLoanSelection()) {
+                    <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
+                        Solicitud pendiente
+                    </p>
+
+                    <h2 class="text-2xl font-semibold tracking-tight text-slate-950">
+                        Tienes una solicitud de préstamo pendiente
+                    </h2>
+
+                    <p class="mt-3 text-sm leading-6 text-slate-600">
+                        Has seleccionado {{ pendingLoanBookCount() }} libro(s) desde el catálogo.
+                        Puedes continuar la solicitud para revisar la selección y confirmar el préstamo.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="mt-6 rounded bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2"
+                        (click)="navigateToNewLoan()"
+                    >
+                        Continuar solicitud
+                    </button>
+                } @else {
+                    <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
+                        Sin préstamos registrados
+                    </p>
+
+                    <h2 class="text-2xl font-semibold tracking-tight text-slate-950">
+                        Aún no tienes préstamos
+                    </h2>
+
+                    <p class="mt-3 text-sm leading-6 text-slate-600">
+                        Cuando realices tu primer préstamo, aparecerá aquí junto con sus libros,
+                        fechas y estado.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="mt-6 rounded bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2"
+                        (click)="navigateToNewLoan()"
+                    >
+                        Nuevo préstamo
+                    </button>
+                }
+            </article>
+        </section>
+    } @else {
+        <section
+            aria-label="Resumen de préstamos"
+            class="grid gap-4 md:grid-cols-3"
+        >
+            <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
+                    Total
+                </p>
+
+                <h2 class="text-sm font-semibold text-slate-950">
+                    Total de préstamos
+                </h2>
+
+                <p class="mt-4 text-3xl font-bold tracking-tight text-slate-950">
+                    {{ totalLoans() }}
+                </p>
+            </article>
+
+            <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
+                    Activos
+                </p>
+
+                <h2 class="text-sm font-semibold text-slate-950">
+                    Préstamos activos
+                </h2>
+
+                <p class="mt-4 text-3xl font-bold tracking-tight text-slate-950">
+                    {{ activeLoans() }}
+                </p>
+            </article>
+
+            <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
+                    Cerrados
+                </p>
+
+                <h2 class="text-sm font-semibold text-slate-950">
+                    Préstamos cerrados
+                </h2>
+
+                <p class="mt-4 text-3xl font-bold tracking-tight text-slate-950">
+                    {{ closedLoans() }}
+                </p>
+            </article>
+        </section>
+
+        <section
+            aria-label="Listado de préstamos"
+            class="space-y-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+        >
+            <div>
+                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
+                    Historial
+                </p>
+
+                <h2 class="text-xl font-semibold tracking-tight text-slate-950">
+                    Historial de préstamos
+                </h2>
+
+                <p class="mt-3 text-sm leading-6 text-slate-600">
+                    Estos son los préstamos registrados en tu cuenta.
+                </p>
+            </div>
+
+            @if (actionError()) {
+                <article class="rounded-lg border border-red-200 bg-red-50 p-4">
+                    <p class="text-sm font-semibold text-red-700">
+                        No se pudo actualizar el préstamo
+                    </p>
+
+                    <p class="mt-2 text-sm leading-6 text-red-700">
+                        Ha ocurrido un problema al devolver el préstamo.
+                        Puedes intentarlo de nuevo en unos momentos.
+                    </p>
+                </article>
+            }
+
+            <section class="space-y-4">
+                @for (loan of loans(); track loan.loanId) {
+                    <article class="rounded-xl border border-slate-200 bg-slate-50 p-5">
+                        <header class="flex flex-col justify-between gap-3 border-b border-slate-200 pb-4 md:flex-row md:items-center">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                    Préstamo
+                                </p>
+
+                                <h3 class="mt-1 text-lg font-semibold text-slate-950">
+                                    Préstamo #{{ loan.loanId }}
+                                </h3>
+                            </div>
+
+                            @if (loan.status === 'ACTIVE') {
+                                <span class="inline-flex w-fit items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
+                                    {{ getLoanStatusText(loan.status) }}
+                                </span>
+                            } @else {
+                                <span class="inline-flex w-fit items-center rounded-full bg-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">
+                                    {{ getLoanStatusText(loan.status) }}
+                                </span>
+                            }
+                        </header>
+
+                        <section
+                            aria-label="Fechas del préstamo"
+                            class="mt-4 grid gap-3 sm:grid-cols-3"
+                        >
+                            <div class="rounded-lg border border-slate-200 bg-white p-4">
+                                <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                                    Inicio
+                                </p>
+
+                                <p class="mt-2 text-sm font-semibold text-slate-950">
+                                    {{ loan.startDate }}
+                                </p>
+                            </div>
+
+                            <div class="rounded-lg border border-slate-200 bg-white p-4">
+                                <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                                    Devolución prevista
+                                </p>
+
+                                <p class="mt-2 text-sm font-semibold text-slate-950">
+                                    {{ loan.dueDate }}
+                                </p>
+                            </div>
+
+                            <div class="rounded-lg border border-slate-200 bg-white p-4">
+                                <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                                    Cierre
+                                </p>
+
+                                <p class="mt-2 text-sm font-semibold text-slate-950">
+                                    @if (loan.closedAt) {
+                                        {{ loan.closedAt }}
+                                    } @else {
+                                        Pendiente
+                                    }
+                                </p>
+                            </div>
+                        </section>
+
+                        <section
+                            aria-label="Libros incluidos en el préstamo"
+                            class="mt-4 rounded-lg border border-slate-200 bg-white p-4"
+                        >
+                            <h4 class="text-sm font-semibold text-slate-950">
+                                Libros incluidos
+                            </h4>
+
+                            @if (loan.books.length === 0) {
+                                <p class="mt-3 text-sm leading-6 text-slate-600">
+                                    Este préstamo no tiene libros asociados.
+                                </p>
+                            } @else {
+                                <div class="mt-3 divide-y divide-slate-200">
+                                    @for (book of loan.books; track book.bookId) {
+                                        <article class="py-3 first:pt-0 last:pb-0">
+                                            <p class="text-sm font-semibold text-slate-950">
+                                                {{ book.title }}
+                                            </p>
+
+                                            <p class="mt-1 text-xs text-slate-600">
+                                                {{ book.author }}
+                                            </p>
+                                        </article>
+                                    }
+                                </div>
+                            }
+                        </section>
+
+                        @if (loan.status === 'ACTIVE') {
+                            <footer class="mt-4 flex justify-end border-t border-slate-200 pt-4">
+                                <button
+                                    type="button"
+                                    class="rounded border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                    (click)="closeLoan(loan.loanId)"
+                                    [disabled]="updatingLoanId() === loan.loanId"
+                                >
+                                    @if (updatingLoanId() === loan.loanId) {
+                                        Devolviendo préstamo...
+                                    } @else {
+                                        Devolver préstamo
+                                    }
+                                </button>
+                            </footer>
+                        }
+                    </article>
+                }
+            </section>
+        </section>
+    }
+
+</section>
