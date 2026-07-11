@@ -17,6 +17,7 @@ export class Dashboard {
   public readonly loading;
   public readonly error;
 
+  public readonly userLoans;
   public readonly totalLoans;
   public readonly recentBooks;
 
@@ -30,7 +31,21 @@ export class Dashboard {
     this.loading = this._loanService.loading;
     this.error = this._loanService.error;
 
-    this.totalLoans = computed(() => this.loans().length);
+    this.userLoans = computed(() => {
+      const user = this.currentUser();
+
+      if (!user) {
+        return [];
+      }
+
+      return this.loans().filter((loan) =>
+        loan.userId === user.id
+      );
+    });
+
+    this.totalLoans = computed(() =>
+      this.userLoans().length
+    );
 
     this.recentBooks = computed(() => {
       const recentLoans = this.getRecentLoans();
@@ -39,7 +54,7 @@ export class Dashboard {
     });
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.loadDashboardData();
   }
 
@@ -56,7 +71,7 @@ export class Dashboard {
   }
 
   private getRecentLoans(): Loan[] {
-    return [...this.loans()].sort((firstLoan, secondLoan) =>
+    return [...this.userLoans()].sort((firstLoan, secondLoan) =>
       secondLoan.startDate.localeCompare(firstLoan.startDate)
     );
   }

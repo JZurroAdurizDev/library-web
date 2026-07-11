@@ -41,8 +41,20 @@ export class NewLoan {
     this.selectedBookIds().length > 0
   );
 
+  public readonly userLoans = computed(() => {
+    const user = this.currentUser();
+
+    if (!user) {
+      return [];
+    }
+
+    return this.loans().filter((loan) =>
+      loan.userId === user.id
+    );
+  });
+
   public readonly activeLoans = computed(() =>
-    this.loans().filter((loan) => loan.status === 'ACTIVE')
+    this.userLoans().filter((loan) => loan.status === 'ACTIVE')
   );
 
   public readonly hasActiveLoan = computed(() =>

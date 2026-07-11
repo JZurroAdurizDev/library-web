@@ -117,7 +117,7 @@
                 </button>
             </article>
         </section>
-    } @else if (loans().length === 0) {
+    } @else if (userLoans().length === 0) {
         <section
             aria-label="Sin préstamos registrados"
             class="rounded-xl border border-slate-200 bg-white p-8 shadow-sm"
@@ -252,7 +252,7 @@
             }
 
             <section class="space-y-4">
-                @for (loan of loans(); track loan.loanId) {
+                @for (loan of userLoans(); track loan.loanId; let loanIndex = $index) {
                     <article class="rounded-xl border border-slate-200 bg-slate-50 p-5">
                         <header class="flex flex-col justify-between gap-3 border-b border-slate-200 pb-4 md:flex-row md:items-center">
                             <div>
@@ -261,7 +261,7 @@
                                 </p>
 
                                 <h3 class="mt-1 text-lg font-semibold text-slate-950">
-                                    Préstamo #{{ loan.loanId }}
+                                    Préstamo #{{ loanIndex + 1 }}
                                 </h3>
                             </div>
 
@@ -345,7 +345,7 @@
                         </section>
 
                         @if (loan.status === 'ACTIVE') {
-                            <footer class="mt-4 flex justify-end border-t border-slate-200 pt-4">
+                            <div class="mt-4 flex justify-end border-t border-slate-200 pt-4">
                                 <button
                                     type="button"
                                     class="rounded border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -358,7 +358,7 @@
                                         Devolver préstamo
                                     }
                                 </button>
-                            </footer>
+                            </div>
                         }
                     </article>
                 }
