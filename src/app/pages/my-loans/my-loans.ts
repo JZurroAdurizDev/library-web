@@ -12,17 +12,27 @@ import { LoanStatus } from '../../models/loan/loan.model';
   styleUrl: './my-loans.css',
 })
 export class MyLoans {
+  private readonly pendingLoanBookIdsKey = 'pendingLoanBookIds';
   private readonly _missingUser = signal(false);
+  private readonly _pendingLoanBookCount = signal(0);
 
   public readonly currentUser;
   public readonly loans;
   public readonly loading;
   public readonly error;
+  public readonly updatingLoanId;
+  public readonly actionError;
+
   public readonly missingUser = this._missingUser.asReadonly();
+  public readonly pendingLoanBookCount = this._pendingLoanBookCount.asReadonly();
 
   public readonly totalLoans;
   public readonly activeLoans;
   public readonly closedLoans;
+
+  public readonly hasPendingLoanSelection = computed(() =>
+    this.pendingLoanBookCount() > 0
+  );
 
   constructor(
     private readonly _authService: AuthService,
@@ -33,6 +43,8 @@ export class MyLoans {
     this.loans = this._loanService.loans;
     this.loading = this._loanService.loading;
     this.error = this._loanService.error;
+    this.updatingLoanId = this._loanService.updatingLoanId;
+    this.actionError = this._loanService.actionError;
 
     this.totalLoans = computed(() => this.loans().length);
 
@@ -45,8 +57,8 @@ export class MyLoans {
     );
   }
 
-
   public ngOnInit(): void {
+    this.loadPendingLoanSelection();
     this.loadUserLoans();
   }
 
@@ -65,6 +77,10 @@ export class MyLoans {
     });
   }
 
+  public closeLoan(loanId: number): void {
+    this._loanService.closeLoan(loanId);
+  }
+
   public navigateToNewLoan(): void {
     this._router.navigate(['/dashboard/my-loans/new']);
   }
@@ -75,5 +91,31 @@ export class MyLoans {
     }
 
     return 'Cerrado';
+  }
+
+  private loadPendingLoanSelection(): void {
+    const storedBookIds = sessionStorage.getItem(this.pendingLoanBookIdsKey);
+
+    if (!storedBookIds) {
+      this._pendingLoanBookCount.set(0);
+      return;
+    }
+
+    try {
+      const parsedBookIds = JSON.parse(storedBookIds);
+
+      if (!Array.isArray(parsedBookIds)) {
+        this._pendingLoanBookCount.set(0);
+        return;
+      }
+
+      const validBookIds = parsedBookIds.filter((bookId) =>
+        Number.isInteger(bookId)
+      );
+
+      this._pendingLoanBookCount.set(validBookIds.length);
+    } catch {
+      this._pendingLoanBookCount.set(0);
+    }
   }
 }

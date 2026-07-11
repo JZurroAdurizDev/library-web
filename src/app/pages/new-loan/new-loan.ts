@@ -1,10 +1,9 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, effect, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../../services/auth/auth.service';
 import { BookService } from '../../services/book/book.service';
 import { LoanService } from '../../services/loan/loan.service';
-import { Book } from '../../models/book/book.model';
 import { LoanRequest } from '../../models/loan/loan.request.model';
 
 @Component({
@@ -14,27 +13,40 @@ import { LoanRequest } from '../../models/loan/loan.request.model';
   styleUrl: './new-loan.css',
 })
 export class NewLoan {
-  private readonly _selectedBooks = signal<Book[]>([]);
+  private readonly pendingLoanBookIdsKey = 'pendingLoanBookIds';
+
+  private readonly _selectedBookIds = signal<number[]>([]);
   private readonly _missingUser = signal(false);
-  private readonly _creatingLoan = signal(false);
-  private readonly _creationError = signal<string | null>(null);
 
   public readonly currentUser;
   public readonly books;
   public readonly loading;
   public readonly error;
 
-  public readonly selectedBooks = this._selectedBooks.asReadonly();
-  public readonly missingUser = this._missingUser.asReadonly();
-  public readonly creatingLoan = this._creatingLoan.asReadonly();
-  public readonly creationError = this._creationError.asReadonly();
+  public readonly loans;
+  public readonly createdLoan;
+  public readonly loanLoading;
+  public readonly loanError;
 
-  public readonly selectedBookIds = computed(() =>
-    this.selectedBooks().map((book) => book.bookId)
+  public readonly selectedBookIds = this._selectedBookIds.asReadonly();
+  public readonly missingUser = this._missingUser.asReadonly();
+
+  public readonly selectedBooks = computed(() =>
+    this.books().filter((book) =>
+      this.selectedBookIds().includes(book.bookId)
+    )
   );
 
   public readonly hasSelectedBooks = computed(() =>
-    this.selectedBooks().length > 0
+    this.selectedBookIds().length > 0
+  );
+
+  public readonly activeLoans = computed(() =>
+    this.loans().filter((loan) => loan.status === 'ACTIVE')
+  );
+
+  public readonly hasActiveLoan = computed(() =>
+    this.activeLoans().length > 0
   );
 
   public readonly startDate = computed(() => this.getTodayDate());
@@ -47,39 +59,62 @@ export class NewLoan {
     private readonly _router: Router
   ) {
     this.currentUser = this._authService.currentUser;
+
     this.books = this._bookService.books;
     this.loading = this._bookService.loading;
     this.error = this._bookService.error;
+
+    this.loans = this._loanService.loans;
+    this.createdLoan = this._loanService.createdLoan;
+    this.loanLoading = this._loanService.loading;
+    this.loanError = this._loanService.error;
+
+    effect(() => {
+      const createdLoan = this.createdLoan();
+
+      if (!createdLoan) {
+        return;
+      }
+
+      this.clearPendingLoanSelection();
+      this._loanService.clearCreatedLoan();
+      this._router.navigate(['/dashboard/my-loans']);
+    });
   }
 
   public ngOnInit(): void {
+    this.loadPendingLoanSelection();
     this.loadBooks();
+    this.loadActiveLoans();
+    this._loanService.clearCreatedLoan();
   }
 
   public loadBooks(): void {
     this._bookService.loadBooks();
   }
 
-  public isBookSelected(bookId: number): boolean {
-    return this.selectedBookIds().includes(bookId);
-  }
+  public loadActiveLoans(): void {
+    const user = this.currentUser();
 
-  public toggleBookSelection(book: Book): void {
-    if (this.isBookSelected(book.bookId)) {
-      this.removeSelectedBook(book.bookId);
+    if (!user) {
+      this._missingUser.set(true);
       return;
     }
 
-    this._selectedBooks.update((selectedBooks) => [
-      ...selectedBooks,
-      book,
-    ]);
+    this._missingUser.set(false);
+
+    this._loanService.searchLoans({
+      userId: user.id,
+      status: 'ACTIVE',
+    });
   }
 
   public removeSelectedBook(bookId: number): void {
-    this._selectedBooks.update((selectedBooks) =>
-      selectedBooks.filter((book) => book.bookId !== bookId)
+    this._selectedBookIds.update((selectedBookIds) =>
+      selectedBookIds.filter((selectedBookId) => selectedBookId !== bookId)
     );
+
+    this.savePendingLoanSelection();
   }
 
   public createLoan(): void {
@@ -94,6 +129,10 @@ export class NewLoan {
       return;
     }
 
+    if (this.hasActiveLoan()) {
+      return;
+    }
+
     const loanRequest: LoanRequest = {
       userId: user.id,
       startDate: this.startDate(),
@@ -101,24 +140,55 @@ export class NewLoan {
       bookIds: this.selectedBookIds(),
     };
 
-    this._creatingLoan.set(true);
-    this._creationError.set(null);
     this._missingUser.set(false);
-
-    this._loanService.createLoan(loanRequest).subscribe({
-      next: () => {
-        this._creatingLoan.set(false);
-        this._router.navigate(['/dashboard/my-loans']);
-      },
-      error: (err) => {
-        this._creationError.set(err.message);
-        this._creatingLoan.set(false);
-      },
-    });
+    this._loanService.createLoan(loanRequest);
   }
 
   public cancel(): void {
+    this.clearPendingLoanSelection();
     this._router.navigate(['/dashboard/my-loans']);
+  }
+
+  public navigateToMyLoans(): void {
+    this._router.navigate(['/dashboard/my-loans']);
+  }
+
+  private loadPendingLoanSelection(): void {
+    const storedBookIds = sessionStorage.getItem(this.pendingLoanBookIdsKey);
+
+    if (!storedBookIds) {
+      this._selectedBookIds.set([]);
+      return;
+    }
+
+    try {
+      const parsedBookIds = JSON.parse(storedBookIds);
+
+      if (!Array.isArray(parsedBookIds)) {
+        this._selectedBookIds.set([]);
+        return;
+      }
+
+      const validBookIds = parsedBookIds.filter((bookId) =>
+        Number.isInteger(bookId)
+      );
+
+      this._selectedBookIds.set(validBookIds);
+    } catch {
+      this._selectedBookIds.set([]);
+    }
+  }
+
+  private savePendingLoanSelection(): void {
+    sessionStorage.setItem(
+      this.pendingLoanBookIdsKey,
+      JSON.stringify(this.selectedBookIds())
+    );
+  }
+
+  private clearPendingLoanSelection(): void {
+    sessionStorage.removeItem(this.pendingLoanBookIdsKey);
+    this._selectedBookIds.set([]);
   }
 
   private getTodayDate(): string {

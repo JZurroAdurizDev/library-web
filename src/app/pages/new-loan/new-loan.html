@@ -7,12 +7,12 @@
             </p>
 
             <h1 class="text-2xl font-semibold tracking-tight text-slate-950">
-                Nuevo préstamo
+                Confirmar solicitud de préstamo
             </h1>
 
             <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
-                Selecciona uno o varios libros del catálogo para crear un nuevo préstamo.
-                La fecha límite de devolución será de 30 días desde hoy.
+                Revisa los libros seleccionados, comprueba las fechas del préstamo
+                y confirma la solicitud.
             </p>
         </div>
 
@@ -25,75 +25,7 @@
         </button>
     </section>
 
-    @if (loading()) {
-        <section
-            aria-label="Cargando catálogo"
-            class="space-y-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
-        >
-            <div>
-                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
-                    Cargando
-                </p>
-
-                <h2 class="text-xl font-semibold tracking-tight text-slate-950">
-                    Cargando libros
-                </h2>
-
-                <p class="mt-3 text-sm leading-6 text-slate-600">
-                    Estamos recuperando los libros disponibles para el préstamo.
-                </p>
-            </div>
-
-            <section class="grid gap-4 lg:grid-cols-[320px_1fr]">
-                <article class="animate-pulse rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-                    <div class="mb-4 h-4 w-40 rounded bg-slate-200"></div>
-                    <div class="mb-5 h-8 w-24 rounded bg-slate-200"></div>
-                    <div class="space-y-3">
-                        <div class="h-12 rounded bg-slate-100"></div>
-                        <div class="h-12 rounded bg-slate-100"></div>
-                    </div>
-                </article>
-
-                <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                    <article class="animate-pulse rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-                        <div class="mb-4 h-5 w-3/4 rounded bg-slate-200"></div>
-                        <div class="mb-3 h-4 w-1/2 rounded bg-slate-100"></div>
-                        <div class="space-y-2">
-                            <div class="h-3 w-full rounded bg-slate-100"></div>
-                            <div class="h-3 w-2/3 rounded bg-slate-100"></div>
-                        </div>
-                    </article>
-
-                    <article class="animate-pulse rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-                        <div class="mb-4 h-5 w-3/4 rounded bg-slate-200"></div>
-                        <div class="mb-3 h-4 w-1/2 rounded bg-slate-100"></div>
-                        <div class="space-y-2">
-                            <div class="h-3 w-full rounded bg-slate-100"></div>
-                            <div class="h-3 w-2/3 rounded bg-slate-100"></div>
-                        </div>
-                    </article>
-
-                    <article class="animate-pulse rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-                        <div class="mb-4 h-5 w-3/4 rounded bg-slate-200"></div>
-                        <div class="mb-3 h-4 w-1/2 rounded bg-slate-100"></div>
-                        <div class="space-y-2">
-                            <div class="h-3 w-full rounded bg-slate-100"></div>
-                            <div class="h-3 w-2/3 rounded bg-slate-100"></div>
-                        </div>
-                    </article>
-
-                    <article class="animate-pulse rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-                        <div class="mb-4 h-5 w-3/4 rounded bg-slate-200"></div>
-                        <div class="mb-3 h-4 w-1/2 rounded bg-slate-100"></div>
-                        <div class="space-y-2">
-                            <div class="h-3 w-full rounded bg-slate-100"></div>
-                            <div class="h-3 w-2/3 rounded bg-slate-100"></div>
-                        </div>
-                    </article>
-                </section>
-            </section>
-        </section>
-    } @else if (missingUser()) {
+    @if (missingUser()) {
         <section
             aria-label="Usuario no disponible"
             class="rounded-xl border border-red-200 bg-white p-8 shadow-sm"
@@ -117,80 +49,24 @@
                 </p>
             </article>
         </section>
-    } @else if (error()) {
-        <section
-            aria-label="Error al cargar libros"
-            class="rounded-xl border border-red-200 bg-white p-8 shadow-sm"
-        >
-            <article class="mx-auto max-w-2xl text-center">
-                <div class="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-700">
-                    !
-                </div>
-
-                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-red-700">
-                    Error de carga
-                </p>
-
-                <h2 class="text-2xl font-semibold tracking-tight text-slate-950">
-                    No se pudieron cargar los libros
-                </h2>
-
-                <p class="mt-3 text-sm leading-6 text-slate-600">
-                    Ha ocurrido un problema al recuperar el catálogo de libros.
-                    Puedes intentarlo de nuevo en unos momentos.
-                </p>
-
-                <button
-                    type="button"
-                    class="mt-6 rounded bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2"
-                    (click)="loadBooks()"
-                >
-                    Reintentar
-                </button>
-            </article>
-        </section>
-    } @else if (books().length === 0) {
-        <section
-            aria-label="Catálogo vacío"
-            class="rounded-xl border border-slate-200 bg-white p-8 shadow-sm"
-        >
-            <article class="mx-auto max-w-2xl text-center">
-                <div class="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
-                    📚
-                </div>
-
-                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
-                    Sin libros disponibles
-                </p>
-
-                <h2 class="text-2xl font-semibold tracking-tight text-slate-950">
-                    No hay libros para prestar
-                </h2>
-
-                <p class="mt-3 text-sm leading-6 text-slate-600">
-                    Cuando haya libros registrados en el catálogo, podrás seleccionarlos
-                    para crear un préstamo.
-                </p>
-            </article>
-        </section>
     } @else {
         <section class="grid gap-6 xl:grid-cols-[360px_1fr]">
 
             <section
-                aria-label="Resumen del préstamo"
+                aria-label="Datos del préstamo"
                 class="h-fit space-y-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
             >
                 <div>
                     <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
-                        Resumen
+                        Datos del préstamo
                     </p>
 
                     <h2 class="text-xl font-semibold tracking-tight text-slate-950">
-                        Resumen del préstamo
+                        Resumen
                     </h2>
 
                     <p class="mt-3 text-sm leading-6 text-slate-600">
-                        Revisa las fechas y los libros seleccionados antes de confirmar.
+                        El préstamo comenzará hoy y tendrá una duración de 30 días.
                     </p>
                 </div>
 
@@ -229,7 +105,7 @@
                     </article>
                 </section>
 
-                @if (creationError()) {
+                @if (loanError()) {
                     <article class="rounded-lg border border-red-200 bg-red-50 p-4">
                         <p class="text-sm font-semibold text-red-700">
                             Error al crear el préstamo
@@ -242,23 +118,72 @@
                     </article>
                 }
 
+                <button
+                    type="button"
+                    class="w-full rounded bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    (click)="createLoan()"
+                    [disabled]="!hasSelectedBooks() || loanLoading()"
+                >
+                    @if (loanLoading()) {
+                        Confirmando préstamo...
+                    } @else {
+                        Confirmar préstamo
+                    }
+                </button>
+            </section>
+
+            <section
+                aria-label="Libros seleccionados"
+                class="space-y-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+            >
+                <div>
+                    <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
+                        Selección
+                    </p>
+
+                    <h2 class="text-xl font-semibold tracking-tight text-slate-950">
+                        Libros seleccionados
+                    </h2>
+
+                    <p class="mt-3 text-sm leading-6 text-slate-600">
+                        Estos son los libros que se incluirán en la solicitud de préstamo.
+                    </p>
+                </div>
+
                 @if (selectedBooks().length === 0) {
-                    <article class="rounded-lg border border-slate-200 bg-slate-50 p-4">
-                        <p class="text-sm leading-6 text-slate-600">
-                            Selecciona al menos un libro para poder confirmar el préstamo.
+                    <article class="rounded-xl border border-slate-200 bg-slate-50 p-8 text-center">
+                        <div class="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                            📚
+                        </div>
+
+                        <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
+                            Sin libros seleccionados
                         </p>
-                    </article>
-                } @else {
-                    <section aria-label="Libros seleccionados">
-                        <h3 class="text-sm font-semibold text-slate-950">
-                            Libros seleccionados
+
+                        <h3 class="text-xl font-semibold tracking-tight text-slate-950">
+                            Aún no has añadido ningún libro
                         </h3>
 
-                        <div class="mt-3 divide-y divide-slate-200 rounded-lg border border-slate-200 bg-slate-50">
-                            @for (book of selectedBooks(); track book.bookId) {
-                                <article class="flex items-start justify-between gap-4 p-4">
+                        <p class="mt-3 text-sm leading-6 text-slate-600">
+                            Vuelve al catálogo, elige un libro y añádelo a la solicitud
+                            para poder confirmar el préstamo.
+                        </p>
+
+                        <button
+                            type="button"
+                            class="mt-6 rounded bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2"
+                            (click)="cancel()"
+                        >
+                            Volver a mis préstamos
+                        </button>
+                    </article>
+                } @else {
+                    <section class="grid gap-3 md:grid-cols-2">
+                        @for (book of selectedBooks(); track book.bookId) {
+                            <article class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+                                <div class="flex items-start justify-between gap-4">
                                     <div>
-                                        <p class="text-sm font-semibold text-slate-950">
+                                        <p class="text-sm font-semibold leading-5 text-slate-950">
                                             {{ book.title }}
                                         </p>
 
@@ -269,130 +194,48 @@
 
                                     <button
                                         type="button"
-                                        class="text-xs font-semibold text-red-700 hover:text-red-800"
+                                        class="shrink-0 text-xs font-semibold text-red-700 hover:text-red-800"
                                         (click)="removeSelectedBook(book.bookId)"
                                     >
                                         Quitar
                                     </button>
-                                </article>
-                            }
-                        </div>
+                                </div>
+
+                                <div class="mt-4 grid grid-cols-2 gap-3 text-xs">
+                                    <div>
+                                        <p class="font-medium text-slate-500">
+                                            Año
+                                        </p>
+
+                                        <p class="mt-1 font-semibold text-slate-950">
+                                            {{ book.publishedYear }}
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <p class="font-medium text-slate-500">
+                                            Págs.
+                                        </p>
+
+                                        <p class="mt-1 font-semibold text-slate-950">
+                                            {{ book.pages }}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3 border-t border-slate-200 pt-3">
+                                    <p class="text-xs font-medium text-slate-500">
+                                        ISBN
+                                    </p>
+
+                                    <p class="mt-1 break-all text-xs text-slate-900">
+                                        {{ book.isbn }}
+                                    </p>
+                                </div>
+                            </article>
+                        }
                     </section>
                 }
-
-                <button
-                    type="button"
-                    class="w-full rounded bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    (click)="createLoan()"
-                    [disabled]="!hasSelectedBooks() || creatingLoan()"
-                >
-                    @if (creatingLoan()) {
-                        Creando préstamo...
-                    } @else {
-                        Confirmar préstamo
-                    }
-                </button>
-            </section>
-
-            <section
-                aria-label="Selección de libros"
-                class="space-y-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
-            >
-                <div>
-                    <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
-                        Selección de libros
-                    </p>
-
-                    <h2 class="text-xl font-semibold tracking-tight text-slate-950">
-                        Seleccionar libros
-                    </h2>
-
-                    <p class="mt-3 text-sm leading-6 text-slate-600">
-                        Marca los libros que quieres incluir en el préstamo.
-                    </p>
-                </div>
-
-                <section class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-                    @for (book of books(); track book.bookId) {
-                        <article
-                            class="rounded-lg border bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-                            [class.border-emerald-400]="isBookSelected(book.bookId)"
-                            [class.border-slate-200]="!isBookSelected(book.bookId)"
-                            [class.ring-1]="isBookSelected(book.bookId)"
-                            [class.ring-emerald-300]="isBookSelected(book.bookId)"
-                        >
-                            <div class="flex items-start justify-between gap-3">
-                                <div>
-                                    <p class="text-sm font-semibold leading-5 text-slate-950">
-                                        {{ book.title }}
-                                    </p>
-
-                                    <p class="mt-1 text-xs text-slate-600">
-                                        {{ book.author }}
-                                    </p>
-                                </div>
-
-                                @if (isBookSelected(book.bookId)) {
-                                    <span class="rounded-full bg-emerald-100 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-emerald-800">
-                                        Añadido
-                                    </span>
-                                }
-                            </div>
-
-                            <div class="mt-4 grid grid-cols-2 gap-3 text-xs">
-                                <div>
-                                    <p class="font-medium text-slate-500">
-                                        Año
-                                    </p>
-
-                                    <p class="mt-1 font-semibold text-slate-950">
-                                        {{ book.publishedYear }}
-                                    </p>
-                                </div>
-
-                                <div>
-                                    <p class="font-medium text-slate-500">
-                                        Págs.
-                                    </p>
-
-                                    <p class="mt-1 font-semibold text-slate-950">
-                                        {{ book.pages }}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div class="mt-3">
-                                <p class="text-xs font-medium text-slate-500">
-                                    ISBN
-                                </p>
-
-                                <p class="mt-1 break-all text-xs text-slate-900">
-                                    {{ book.isbn }}
-                                </p>
-                            </div>
-
-                            <button
-                                type="button"
-                                class="mt-4 w-full rounded px-3 py-2 text-xs font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2"
-                                [class.bg-emerald-700]="!isBookSelected(book.bookId)"
-                                [class.text-white]="!isBookSelected(book.bookId)"
-                                [class.hover:bg-emerald-800]="!isBookSelected(book.bookId)"
-                                [class.border]="isBookSelected(book.bookId)"
-                                [class.border-slate-300]="isBookSelected(book.bookId)"
-                                [class.bg-white]="isBookSelected(book.bookId)"
-                                [class.text-slate-700]="isBookSelected(book.bookId)"
-                                [class.hover:bg-slate-50]="isBookSelected(book.bookId)"
-                                (click)="toggleBookSelection(book)"
-                            >
-                                @if (isBookSelected(book.bookId)) {
-                                    Quitar de la selección
-                                } @else {
-                                    Añadir al préstamo
-                                }
-                            </button>
-                        </article>
-                    }
-                </section>
             </section>
 
         </section>
