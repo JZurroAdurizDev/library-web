@@ -12,6 +12,7 @@ import { CookiePolicy } from './pages/cookie-policy/cookie-policy';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { Books } from './pages/books/books';
 import { BookDetails } from './pages/book-details/book-details';
+import { NewBook } from './pages/new-book/new-book';
 import { MyLoans } from './pages/my-loans/my-loans';
 import { NewLoan } from './pages/new-loan/new-loan';
 import { Account } from './pages/account/account';
@@ -75,16 +76,21 @@ export const routes: Routes = [
                 component: Books
             },
             {
+                path: 'books/new',
+                component: NewBook,
+                canActivate: [adminGuard]
+            },
+            {
                 path: 'books/:id',
                 component: BookDetails
-                },
+            },
             {
                 path: 'my-loans',
                 component: MyLoans
             },
             {
-            path: 'my-loans/new',
-            component: NewLoan
+                path: 'my-loans/new',
+                component: NewLoan
             },
             {
                 path: 'account',
