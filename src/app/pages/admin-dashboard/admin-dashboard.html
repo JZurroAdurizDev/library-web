@@ -1,2 +1,168 @@
-<!-- admin-dashboard.html -->
-<h1>Admin Dashboard</h1>
+<section>
+
+    <section>
+        <p>Administración</p>
+
+        <h1>Panel de administración</h1>
+
+        <p>
+            Gestiona la actividad general de Library Web, revisa usuarios, libros y préstamos,
+            y accede a las secciones administrativas disponibles.
+        </p>
+
+        @if (currentUser(); as user) {
+            <p>
+                Sesión iniciada como
+                <strong>{{ user.firstName }} {{ user.lastName }}</strong>
+            </p>
+        }
+    </section>
+
+    @if (loading()) {
+        <section aria-label="Cargando panel de administración">
+            <p>Cargando</p>
+
+            <h2>Cargando datos administrativos</h2>
+
+            <p>
+                Estamos recuperando la información de usuarios, libros y préstamos.
+            </p>
+        </section>
+    } @else if (hasError()) {
+        <section aria-label="Error al cargar el panel de administración">
+            <article>
+                <p>Error de carga</p>
+
+                <h2>No se pudieron cargar los datos administrativos</h2>
+
+                <p>
+                    Ha ocurrido un problema al recuperar la información del panel.
+                    Puedes intentarlo de nuevo en unos momentos.
+                </p>
+
+                <button type="button" (click)="loadAdminData()">
+                    Reintentar
+                </button>
+            </article>
+        </section>
+    } @else {
+        <section aria-label="Resumen administrativo">
+            <article>
+                <p>Usuarios</p>
+
+                <h2>Total de usuarios</h2>
+
+                <p>{{ totalUsers() }}</p>
+            </article>
+
+            <article>
+                <p>Libros</p>
+
+                <h2>Total de libros</h2>
+
+                <p>{{ totalBooks() }}</p>
+            </article>
+
+            <article>
+                <p>Préstamos</p>
+
+                <h2>Total de préstamos</h2>
+
+                <p>{{ totalLoans() }}</p>
+            </article>
+
+            <article>
+                <p>Activos</p>
+
+                <h2>Préstamos activos</h2>
+
+                <p>{{ activeLoans() }}</p>
+            </article>
+
+            <article>
+                <p>Cerrados</p>
+
+                <h2>Préstamos cerrados</h2>
+
+                <p>{{ closedLoans() }}</p>
+            </article>
+        </section>
+
+        <section aria-label="Secciones administrativas">
+            <div>
+                <p>Gestión</p>
+
+                <h2>Secciones administrativas</h2>
+
+                <p>
+                    Accede a las áreas de gestión de usuarios, libros y préstamos.
+                </p>
+            </div>
+
+            <section>
+                <article>
+                    <h3>Usuarios</h3>
+
+                    <p>
+                        Revisa usuarios registrados y elimina cuentas cuando sea necesario.
+                    </p>
+
+                    <a routerLink="/dashboard/admin/users">
+                        Gestionar usuarios
+                    </a>
+                </article>
+
+                <article>
+                    <h3>Libros</h3>
+
+                    <p>
+                        Administra el catálogo desde las páginas de libros.
+                    </p>
+
+                    <a routerLink="/dashboard/books">
+                        Ir al catálogo
+                    </a>
+                </article>
+
+                <article>
+                    <h3>Préstamos</h3>
+
+                    <p>
+                        Revisa la actividad de préstamos y sus estados.
+                    </p>
+
+                    <a routerLink="/dashboard/admin/loans">
+                        Gestionar préstamos
+                    </a>
+                </article>
+            </section>
+        </section>
+
+        <aside aria-label="Distribución de usuarios">
+            <div>
+                <p>Usuarios</p>
+
+                <h2>Tipos de usuario</h2>
+
+                <p>
+                    Distribución actual de usuarios registrados.
+                </p>
+            </div>
+
+            <section>
+                <article>
+                    <p>Administradores</p>
+
+                    <p>{{ adminUsers() }}</p>
+                </article>
+
+                <article>
+                    <p>Usuarios normales</p>
+
+                    <p>{{ regularUsers() }}</p>
+                </article>
+            </section>
+        </aside>
+    }
+
+</section>
