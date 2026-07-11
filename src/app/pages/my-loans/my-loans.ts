@@ -26,6 +26,7 @@ export class MyLoans {
   public readonly missingUser = this._missingUser.asReadonly();
   public readonly pendingLoanBookCount = this._pendingLoanBookCount.asReadonly();
 
+  public readonly userLoans;
   public readonly totalLoans;
   public readonly activeLoans;
   public readonly closedLoans;
@@ -46,14 +47,28 @@ export class MyLoans {
     this.updatingLoanId = this._loanService.updatingLoanId;
     this.actionError = this._loanService.actionError;
 
-    this.totalLoans = computed(() => this.loans().length);
+    this.userLoans = computed(() => {
+      const user = this.currentUser();
+
+      if (!user) {
+        return [];
+      }
+
+      return this.loans().filter((loan) =>
+        loan.userId === user.id
+      );
+    });
+
+    this.totalLoans = computed(() =>
+      this.userLoans().length
+    );
 
     this.activeLoans = computed(() =>
-      this.loans().filter((loan) => loan.status === 'ACTIVE').length
+      this.userLoans().filter((loan) => loan.status === 'ACTIVE').length
     );
 
     this.closedLoans = computed(() =>
-      this.loans().filter((loan) => loan.status === 'CLOSED').length
+      this.userLoans().filter((loan) => loan.status === 'CLOSED').length
     );
   }
 
