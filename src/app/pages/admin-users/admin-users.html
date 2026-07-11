@@ -1,0 +1,505 @@
+<section class="space-y-6 px-6 py-6">
+
+    <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <a
+            routerLink="/dashboard/admin"
+            class="text-sm font-semibold text-emerald-700 hover:text-emerald-800"
+        >
+            ← Volver al panel de administración
+        </a>
+
+        <p class="mt-6 mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
+            Administración
+        </p>
+
+        <h1 class="text-2xl font-semibold tracking-tight text-slate-950">
+            Gestión de usuarios
+        </h1>
+
+        <p class="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
+            Revisa los usuarios registrados, modifica sus datos y elimina cuentas cuando sea necesario.
+        </p>
+    </section>
+
+    @if (loading()) {
+        <section
+            aria-label="Cargando usuarios"
+            class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+        >
+            <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
+                Cargando
+            </p>
+
+            <h2 class="text-xl font-semibold tracking-tight text-slate-950">
+                Cargando usuarios
+            </h2>
+
+            <p class="mt-3 text-sm leading-6 text-slate-600">
+                Estamos recuperando la lista de usuarios registrados.
+            </p>
+        </section>
+    } @else if (error()) {
+        <section
+            aria-label="Error al cargar usuarios"
+            class="rounded-xl border border-red-200 bg-white p-8 shadow-sm"
+        >
+            <article class="mx-auto max-w-2xl text-center">
+                <div class="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-700">
+                    !
+                </div>
+
+                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-red-700">
+                    Error de carga
+                </p>
+
+                <h2 class="text-2xl font-semibold tracking-tight text-slate-950">
+                    No se pudieron cargar los usuarios
+                </h2>
+
+                <p class="mt-3 text-sm leading-6 text-slate-600">
+                    {{ error() }}
+                </p>
+
+                <button
+                    type="button"
+                    class="mt-6 rounded bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2"
+                    (click)="loadUsers()"
+                >
+                    Reintentar
+                </button>
+            </article>
+        </section>
+    } @else {
+        <section
+            aria-label="Resumen de usuarios"
+            class="grid gap-4 md:grid-cols-3"
+        >
+            <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
+                    Total
+                </p>
+
+                <h2 class="text-sm font-semibold text-slate-950">
+                    Usuarios registrados
+                </h2>
+
+                <p class="mt-4 text-3xl font-bold tracking-tight text-slate-950">
+                    {{ totalUsers() }}
+                </p>
+            </article>
+
+            <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
+                    Administradores
+                </p>
+
+                <h2 class="text-sm font-semibold text-slate-950">
+                    Usuarios admin
+                </h2>
+
+                <p class="mt-4 text-3xl font-bold tracking-tight text-slate-950">
+                    {{ adminUsers() }}
+                </p>
+            </article>
+
+            <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
+                    Usuarios
+                </p>
+
+                <h2 class="text-sm font-semibold text-slate-950">
+                    Usuarios normales
+                </h2>
+
+                <p class="mt-4 text-3xl font-bold tracking-tight text-slate-950">
+                    {{ regularUsers() }}
+                </p>
+            </article>
+        </section>
+
+        @if (actionError()) {
+            <section
+                aria-label="Error al gestionar usuarios"
+                class="rounded-xl border border-red-200 bg-red-50 p-5 shadow-sm"
+            >
+                <article>
+                    <p class="text-sm font-semibold text-red-700">
+                        No se pudo completar la acción
+                    </p>
+
+                    <p class="mt-2 text-sm leading-6 text-red-700">
+                        {{ actionError() }}
+                    </p>
+                </article>
+            </section>
+        }
+
+        @if (formError()) {
+            <section
+                aria-label="Error de formulario"
+                class="rounded-xl border border-red-200 bg-red-50 p-5 shadow-sm"
+            >
+                <article>
+                    <p class="text-sm font-semibold text-red-700">
+                        Formulario incorrecto
+                    </p>
+
+                    <p class="mt-2 text-sm leading-6 text-red-700">
+                        {{ formError() }}
+                    </p>
+                </article>
+            </section>
+        }
+
+        @if (selectedUserToDelete(); as userToDelete) {
+            <section
+                aria-label="Confirmar eliminación de usuario"
+                class="rounded-xl border border-red-200 bg-red-50 p-5 shadow-sm"
+            >
+                <article>
+                    <p class="text-sm font-semibold text-red-700">
+                        Confirmar eliminación
+                    </p>
+
+                    <h2 class="mt-2 text-xl font-semibold tracking-tight text-slate-950">
+                        ¿Eliminar a {{ userToDelete.firstName }} {{ userToDelete.lastName }}?
+                    </h2>
+
+                    <p class="mt-3 text-sm leading-6 text-red-700">
+                        Esta acción eliminará la cuenta asociada al correo
+                        <span class="font-semibold">{{ userToDelete.email }}</span>.
+                    </p>
+
+                    <p class="mt-2 text-sm leading-6 text-red-700">
+                        La operación no se puede deshacer desde esta pantalla.
+                    </p>
+
+                    @if (isCurrentUser(userToDelete.id)) {
+                        <p class="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+                            No puedes eliminar tu propio usuario desde esta pantalla.
+                        </p>
+                    }
+
+                    <footer class="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                        <button
+                            type="button"
+                            class="rounded border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2"
+                            (click)="cancelUserDeletion()"
+                        >
+                            Cancelar
+                        </button>
+
+                        <button
+                            type="button"
+                            class="rounded bg-red-700 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            (click)="confirmUserDeletion(userToDelete.id)"
+                            [disabled]="deletingUserId() === userToDelete.id || isCurrentUser(userToDelete.id)"
+                        >
+                            @if (deletingUserId() === userToDelete.id) {
+                                Eliminando usuario...
+                            } @else {
+                                Sí, eliminar usuario
+                            }
+                        </button>
+                    </footer>
+                </article>
+            </section>
+        }
+
+        <section
+            aria-label="Listado de usuarios"
+            class="space-y-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+        >
+            <div>
+                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
+                    Usuarios
+                </p>
+
+                <h2 class="text-xl font-semibold tracking-tight text-slate-950">
+                    Usuarios registrados
+                </h2>
+
+                <p class="mt-3 text-sm leading-6 text-slate-600">
+                    Lista completa de usuarios disponibles actualmente en la aplicación.
+                </p>
+            </div>
+
+            @if (!hasUsers()) {
+                <article class="rounded-xl border border-slate-200 bg-slate-50 p-8 text-center">
+                    <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
+                        Sin usuarios
+                    </p>
+
+                    <h3 class="text-xl font-semibold tracking-tight text-slate-950">
+                        No hay usuarios registrados
+                    </h3>
+
+                    <p class="mt-3 text-sm leading-6 text-slate-600">
+                        Cuando se registren usuarios, aparecerán en esta sección.
+                    </p>
+                </article>
+            } @else {
+                <section class="space-y-4">
+                    @for (user of users(); track user.id) {
+                        <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                            <header class="flex flex-col gap-3 border-b border-slate-200 pb-4 sm:flex-row sm:items-start sm:justify-between">
+                                <div>
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <h3 class="text-lg font-semibold tracking-tight text-slate-950">
+                                            {{ user.firstName }} {{ user.lastName }}
+                                        </h3>
+
+                                        @if (isCurrentUser(user.id)) {
+                                            <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">
+                                                Usuario actual
+                                            </span>
+                                        }
+                                    </div>
+
+                                    <p class="mt-1 text-sm text-slate-600">
+                                        {{ user.email }}
+                                    </p>
+                                </div>
+
+                                <p
+                                    class="inline-flex w-fit rounded-full px-3 py-1 text-xs font-semibold"
+                                    [class.bg-emerald-100]="user.role === 'ADMIN'"
+                                    [class.text-emerald-800]="user.role === 'ADMIN'"
+                                    [class.bg-slate-100]="user.role === 'USER'"
+                                    [class.text-slate-700]="user.role === 'USER'"
+                                >
+                                    {{ getUserRoleText(user.role) }}
+                                </p>
+                            </header>
+
+                            <section
+                                aria-label="Información del usuario"
+                                class="mt-4 grid gap-3 md:grid-cols-3"
+                            >
+                                <article class="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                                        ID
+                                    </p>
+
+                                    <p class="mt-2 text-sm font-semibold text-slate-950">
+                                        {{ user.id }}
+                                    </p>
+                                </article>
+
+                                <article class="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                                        DNI
+                                    </p>
+
+                                    <p class="mt-2 text-sm font-semibold text-slate-950">
+                                        {{ user.dni }}
+                                    </p>
+                                </article>
+
+                                <article class="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                                        Rol
+                                    </p>
+
+                                    <p class="mt-2 text-sm font-semibold text-slate-950">
+                                        {{ getUserRoleText(user.role) }}
+                                    </p>
+                                </article>
+                            </section>
+
+                            <section class="mt-4 grid gap-3 md:grid-cols-3">
+                                <article class="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                                        Nombre
+                                    </p>
+
+                                    <p class="mt-2 text-sm font-semibold text-slate-950">
+                                        {{ user.firstName }}
+                                    </p>
+                                </article>
+
+                                <article class="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                                        Apellidos
+                                    </p>
+
+                                    <p class="mt-2 text-sm font-semibold text-slate-950">
+                                        {{ user.lastName }}
+                                    </p>
+                                </article>
+
+                                <article class="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                                        Email
+                                    </p>
+
+                                    <p class="mt-2 break-all text-sm font-semibold text-slate-950">
+                                        {{ user.email }}
+                                    </p>
+                                </article>
+                            </section>
+
+                            @if (selectedUserToEdit()?.id === user.id) {
+                                <section
+                                    aria-label="Editar usuario"
+                                    class="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-5"
+                                >
+                                    <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
+                                        Edición
+                                    </p>
+
+                                    <h4 class="text-lg font-semibold tracking-tight text-slate-950">
+                                        Editar usuario
+                                    </h4>
+
+                                    <form
+                                        class="mt-5 space-y-5"
+                                        [formGroup]="userForm"
+                                        (ngSubmit)="updateUser(user.id)"
+                                    >
+                                        <section class="grid gap-5 md:grid-cols-2">
+                                            <div>
+                                                <label
+                                                    for="dni"
+                                                    class="mb-2 block text-sm font-semibold text-slate-700"
+                                                >
+                                                    DNI
+                                                </label>
+
+                                                <input
+                                                    id="dni"
+                                                    type="text"
+                                                    formControlName="dni"
+                                                    class="block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-950 shadow-sm outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20"
+                                                >
+
+                                                @if (hasFieldError('dni')) {
+                                                    <p class="mt-2 text-sm text-red-700">
+                                                        El DNI es obligatorio.
+                                                    </p>
+                                                }
+                                            </div>
+
+                                            <div>
+                                                <label
+                                                    for="email"
+                                                    class="mb-2 block text-sm font-semibold text-slate-700"
+                                                >
+                                                    Email
+                                                </label>
+
+                                                <input
+                                                    id="email"
+                                                    type="email"
+                                                    formControlName="email"
+                                                    class="block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-950 shadow-sm outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20"
+                                                >
+
+                                                @if (hasFieldError('email')) {
+                                                    <p class="mt-2 text-sm text-red-700">
+                                                        El email debe ser válido.
+                                                    </p>
+                                                }
+                                            </div>
+
+                                            <div>
+                                                <label
+                                                    for="firstName"
+                                                    class="mb-2 block text-sm font-semibold text-slate-700"
+                                                >
+                                                    Nombre
+                                                </label>
+
+                                                <input
+                                                    id="firstName"
+                                                    type="text"
+                                                    formControlName="firstName"
+                                                    class="block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-950 shadow-sm outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20"
+                                                >
+
+                                                @if (hasFieldError('firstName')) {
+                                                    <p class="mt-2 text-sm text-red-700">
+                                                        El nombre es obligatorio.
+                                                    </p>
+                                                }
+                                            </div>
+
+                                            <div>
+                                                <label
+                                                    for="lastName"
+                                                    class="mb-2 block text-sm font-semibold text-slate-700"
+                                                >
+                                                    Apellidos
+                                                </label>
+
+                                                <input
+                                                    id="lastName"
+                                                    type="text"
+                                                    formControlName="lastName"
+                                                    class="block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-950 shadow-sm outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20"
+                                                >
+
+                                                @if (hasFieldError('lastName')) {
+                                                    <p class="mt-2 text-sm text-red-700">
+                                                        Los apellidos son obligatorios.
+                                                    </p>
+                                                }
+                                            </div>
+                                        </section>
+
+                                        <footer class="flex flex-col-reverse gap-3 border-t border-slate-200 pt-5 sm:flex-row sm:justify-end">
+                                            <button
+                                                type="button"
+                                                class="rounded border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2"
+                                                (click)="cancelUserEdition()"
+                                            >
+                                                Cancelar
+                                            </button>
+
+                                            <button
+                                                type="submit"
+                                                class="rounded bg-emerald-700 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                                [disabled]="updatingUserId() === user.id"
+                                            >
+                                                @if (updatingUserId() === user.id) {
+                                                    Guardando cambios...
+                                                } @else {
+                                                    Guardar cambios
+                                                }
+                                            </button>
+                                        </footer>
+                                    </form>
+                                </section>
+                            }
+
+                            <footer class="mt-5 flex flex-col gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:justify-end">
+                                <button
+                                    type="button"
+                                    class="rounded border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                    (click)="startUserEdition(user)"
+                                    [disabled]="updatingUserId() === user.id || deletingUserId() === user.id"
+                                >
+                                    Editar usuario
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="rounded border border-red-300 bg-white px-4 py-2 text-sm font-semibold text-red-700 shadow-sm hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                    (click)="requestUserDeletion(user)"
+                                    [disabled]="updatingUserId() === user.id || deletingUserId() === user.id || isCurrentUser(user.id)"
+                                >
+                                    @if (deletingUserId() === user.id) {
+                                        Eliminando usuario...
+                                    } @else {
+                                        Eliminar usuario
+                                    }
+                                </button>
+                            </footer>
+                        </article>
+                    }
+                </section>
+            }
+        </section>
+    }
+
+</section>

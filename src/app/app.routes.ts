@@ -12,10 +12,13 @@ import { CookiePolicy } from './pages/cookie-policy/cookie-policy';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { Books } from './pages/books/books';
 import { BookDetails } from './pages/book-details/book-details';
+import { NewBook } from './pages/new-book/new-book';
 import { MyLoans } from './pages/my-loans/my-loans';
 import { NewLoan } from './pages/new-loan/new-loan';
+import { AdminUsers } from './pages/admin-users/admin-users';
 import { Account } from './pages/account/account';
 import { AdminDashboard } from './pages/admin-dashboard/admin-dashboard';
+import { AdminLoans } from './pages/admin-loans/admin-loans';
 import { NotFound } from './pages/not-found/not-found';
 
 import { authGuard } from './guards/auth.guard';
@@ -75,16 +78,26 @@ export const routes: Routes = [
                 component: Books
             },
             {
+                path: 'books/new',
+                component: NewBook,
+                canActivate: [adminGuard]
+            },
+            {
                 path: 'books/:id',
                 component: BookDetails
-                },
+            },
             {
                 path: 'my-loans',
                 component: MyLoans
             },
             {
-            path: 'my-loans/new',
-            component: NewLoan
+                path: 'my-loans/new',
+                component: NewLoan
+            },
+            {
+                path: 'admin/users',
+                component: AdminUsers,
+                canActivate: [adminGuard]
             },
             {
                 path: 'account',
@@ -93,6 +106,11 @@ export const routes: Routes = [
             {
                 path: 'admin',
                 component: AdminDashboard,
+                canActivate: [adminGuard]
+            },
+            {
+                path: 'admin/loans',
+                component: AdminLoans,
                 canActivate: [adminGuard]
             }
         ]
