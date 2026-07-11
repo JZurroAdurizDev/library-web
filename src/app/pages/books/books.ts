@@ -1,6 +1,7 @@
 import { Component, computed, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
+import { AuthService } from '../../services/auth/auth.service';
 import { BookService } from '../../services/book/book.service';
 
 @Component({
@@ -14,12 +15,16 @@ import { BookService } from '../../services/book/book.service';
 export class Books {
   private readonly _currentPage = signal(1);
 
+  public readonly currentUser;
+
   public readonly books;
   public readonly loading;
   public readonly error;
 
   public readonly currentPage = this._currentPage.asReadonly();
   public readonly itemsPerPage = 20;
+
+  public readonly isAdmin;
 
   public readonly totalPages = computed(() => {
     const totalBooks = this.books().length;
@@ -38,13 +43,23 @@ export class Books {
     return this.books().slice(startIndex, endIndex);
   });
 
-  constructor(private readonly _bookService: BookService) {
+  constructor(
+    private readonly _authService: AuthService,
+    private readonly _bookService: BookService,
+    private readonly _router: Router
+  ) {
+    this.currentUser = this._authService.currentUser;
+
     this.books = this._bookService.books;
     this.loading = this._bookService.loading;
     this.error = this._bookService.error;
+
+    this.isAdmin = computed(() =>
+      this.currentUser()?.role === 'ADMIN'
+    );
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.loadBooks();
   }
 
@@ -67,5 +82,9 @@ export class Books {
     }
 
     this._currentPage.update((currentPage) => currentPage + 1);
+  }
+
+  public navigateToNewBook(): void {
+    this._router.navigate(['/dashboard/books/new']);
   }
 }
