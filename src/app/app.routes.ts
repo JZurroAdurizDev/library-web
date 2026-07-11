@@ -15,6 +15,7 @@ import { BookDetails } from './pages/book-details/book-details';
 import { NewBook } from './pages/new-book/new-book';
 import { MyLoans } from './pages/my-loans/my-loans';
 import { NewLoan } from './pages/new-loan/new-loan';
+import { AdminUsers } from './pages/admin-users/admin-users';
 import { Account } from './pages/account/account';
 import { AdminDashboard } from './pages/admin-dashboard/admin-dashboard';
 import { AdminLoans } from './pages/admin-loans/admin-loans';
@@ -92,6 +93,11 @@ export const routes: Routes = [
             {
                 path: 'my-loans/new',
                 component: NewLoan
+            },
+            {
+                path: 'admin/users',
+                component: AdminUsers,
+                canActivate: [adminGuard]
             },
             {
                 path: 'account',

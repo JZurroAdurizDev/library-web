@@ -1,0 +1,351 @@
+<section>
+
+    <section>
+        <a routerLink="/dashboard/admin">
+            Volver al panel de administración
+        </a>
+
+        <p>Administración</p>
+
+        <h1>Gestión de usuarios</h1>
+
+        <p>
+            Revisa los usuarios registrados, modifica sus datos y elimina cuentas cuando sea necesario.
+        </p>
+    </section>
+
+    @if (loading()) {
+        <section aria-label="Cargando usuarios">
+            <p>Cargando</p>
+
+            <h2>Cargando usuarios</h2>
+
+            <p>
+                Estamos recuperando la lista de usuarios registrados.
+            </p>
+        </section>
+    } @else if (error()) {
+        <section aria-label="Error al cargar usuarios">
+            <article>
+                <p>Error de carga</p>
+
+                <h2>No se pudieron cargar los usuarios</h2>
+
+                <p>
+                    {{ error() }}
+                </p>
+
+                <button
+                    type="button"
+                    (click)="loadUsers()"
+                >
+                    Reintentar
+                </button>
+            </article>
+        </section>
+    } @else {
+        <section aria-label="Resumen de usuarios">
+            <article>
+                <p>Total</p>
+
+                <h2>Usuarios registrados</h2>
+
+                <p>{{ totalUsers() }}</p>
+            </article>
+
+            <article>
+                <p>Administradores</p>
+
+                <h2>Usuarios admin</h2>
+
+                <p>{{ adminUsers() }}</p>
+            </article>
+
+            <article>
+                <p>Usuarios</p>
+
+                <h2>Usuarios normales</h2>
+
+                <p>{{ regularUsers() }}</p>
+            </article>
+        </section>
+
+        @if (actionError()) {
+            <section aria-label="Error al gestionar usuarios">
+                <article>
+                    <p>No se pudo completar la acción</p>
+
+                    <p>
+                        {{ actionError() }}
+                    </p>
+                </article>
+            </section>
+        }
+
+        @if (formError()) {
+            <section aria-label="Error de formulario">
+                <article>
+                    <p>Formulario incorrecto</p>
+
+                    <p>
+                        {{ formError() }}
+                    </p>
+                </article>
+            </section>
+        }
+
+        @if (selectedUserToDelete(); as userToDelete) {
+            <section aria-label="Confirmar eliminación de usuario">
+                <article>
+                    <p>Confirmar eliminación</p>
+
+                    <h2>
+                        ¿Eliminar a {{ userToDelete.firstName }} {{ userToDelete.lastName }}?
+                    </h2>
+
+                    <p>
+                        Esta acción eliminará la cuenta asociada al correo
+                        <strong>{{ userToDelete.email }}</strong>.
+                    </p>
+
+                    <p>
+                        La operación no se puede deshacer desde esta pantalla.
+                    </p>
+
+                    @if (isCurrentUser(userToDelete.id)) {
+                        <p>
+                            No puedes eliminar tu propio usuario desde esta pantalla.
+                        </p>
+                    }
+
+                    <button
+                        type="button"
+                        (click)="cancelUserDeletion()"
+                    >
+                        Cancelar
+                    </button>
+
+                    <button
+                        type="button"
+                        (click)="confirmUserDeletion(userToDelete.id)"
+                        [disabled]="deletingUserId() === userToDelete.id || isCurrentUser(userToDelete.id)"
+                    >
+                        @if (deletingUserId() === userToDelete.id) {
+                            Eliminando usuario...
+                        } @else {
+                            Sí, eliminar usuario
+                        }
+                    </button>
+                </article>
+            </section>
+        }
+
+        <section aria-label="Listado de usuarios">
+            <div>
+                <h2>Usuarios registrados</h2>
+
+                <p>
+                    Lista completa de usuarios disponibles actualmente en la aplicación.
+                </p>
+            </div>
+
+            @if (!hasUsers()) {
+                <article>
+                    <p>Sin usuarios</p>
+
+                    <h3>No hay usuarios registrados</h3>
+
+                    <p>
+                        Cuando se registren usuarios, aparecerán en esta sección.
+                    </p>
+                </article>
+            } @else {
+                <section>
+                    @for (user of users(); track user.id) {
+                        <article>
+                            <header>
+                                <div>
+                                    <h3>
+                                        {{ user.firstName }} {{ user.lastName }}
+                                    </h3>
+
+                                    <p>
+                                        {{ user.email }}
+                                    </p>
+                                </div>
+
+                                <p>
+                                    {{ getUserRoleText(user.role) }}
+                                </p>
+                            </header>
+
+                            <section aria-label="Información del usuario">
+                                <p>
+                                    <strong>ID:</strong>
+                                    {{ user.id }}
+                                </p>
+
+                                <p>
+                                    <strong>DNI:</strong>
+                                    {{ user.dni }}
+                                </p>
+
+                                <p>
+                                    <strong>Nombre:</strong>
+                                    {{ user.firstName }}
+                                </p>
+
+                                <p>
+                                    <strong>Apellidos:</strong>
+                                    {{ user.lastName }}
+                                </p>
+
+                                <p>
+                                    <strong>Email:</strong>
+                                    {{ user.email }}
+                                </p>
+
+                                <p>
+                                    <strong>Rol:</strong>
+                                    {{ getUserRoleText(user.role) }}
+                                </p>
+                            </section>
+
+                            @if (selectedUserToEdit()?.id === user.id) {
+                                <section aria-label="Editar usuario">
+                                    <h4>
+                                        Editar usuario
+                                    </h4>
+
+                                    <form
+                                        [formGroup]="userForm"
+                                        (ngSubmit)="updateUser(user.id)"
+                                    >
+                                        <div>
+                                            <label for="dni">
+                                                DNI
+                                            </label>
+
+                                            <input
+                                                id="dni"
+                                                type="text"
+                                                formControlName="dni"
+                                            >
+
+                                            @if (hasFieldError('dni')) {
+                                                <p>
+                                                    El DNI es obligatorio.
+                                                </p>
+                                            }
+                                        </div>
+
+                                        <div>
+                                            <label for="firstName">
+                                                Nombre
+                                            </label>
+
+                                            <input
+                                                id="firstName"
+                                                type="text"
+                                                formControlName="firstName"
+                                            >
+
+                                            @if (hasFieldError('firstName')) {
+                                                <p>
+                                                    El nombre es obligatorio.
+                                                </p>
+                                            }
+                                        </div>
+
+                                        <div>
+                                            <label for="lastName">
+                                                Apellidos
+                                            </label>
+
+                                            <input
+                                                id="lastName"
+                                                type="text"
+                                                formControlName="lastName"
+                                            >
+
+                                            @if (hasFieldError('lastName')) {
+                                                <p>
+                                                    Los apellidos son obligatorios.
+                                                </p>
+                                            }
+                                        </div>
+
+                                        <div>
+                                            <label for="email">
+                                                Email
+                                            </label>
+
+                                            <input
+                                                id="email"
+                                                type="email"
+                                                formControlName="email"
+                                            >
+
+                                            @if (hasFieldError('email')) {
+                                                <p>
+                                                    El email debe ser válido.
+                                                </p>
+                                            }
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            (click)="cancelUserEdition()"
+                                        >
+                                            Cancelar
+                                        </button>
+
+                                        <button
+                                            type="submit"
+                                            [disabled]="updatingUserId() === user.id"
+                                        >
+                                            @if (updatingUserId() === user.id) {
+                                                Guardando cambios...
+                                            } @else {
+                                                Guardar cambios
+                                            }
+                                        </button>
+                                    </form>
+                                </section>
+                            }
+
+                            <footer>
+                                @if (isCurrentUser(user.id)) {
+                                    <p>
+                                        Usuario actual
+                                    </p>
+                                }
+
+                                <button
+                                    type="button"
+                                    (click)="startUserEdition(user)"
+                                    [disabled]="updatingUserId() === user.id || deletingUserId() === user.id"
+                                >
+                                    Editar usuario
+                                </button>
+
+                                <button
+                                    type="button"
+                                    (click)="requestUserDeletion(user)"
+                                    [disabled]="updatingUserId() === user.id || deletingUserId() === user.id || isCurrentUser(user.id)"
+                                >
+                                    @if (deletingUserId() === user.id) {
+                                        Eliminando usuario...
+                                    } @else {
+                                        Eliminar usuario
+                                    }
+                                </button>
+                            </footer>
+                        </article>
+                    }
+                </section>
+            }
+        </section>
+    }
+
+</section>
