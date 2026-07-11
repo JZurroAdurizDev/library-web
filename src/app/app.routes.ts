@@ -17,6 +17,7 @@ import { MyLoans } from './pages/my-loans/my-loans';
 import { NewLoan } from './pages/new-loan/new-loan';
 import { Account } from './pages/account/account';
 import { AdminDashboard } from './pages/admin-dashboard/admin-dashboard';
+import { AdminLoans } from './pages/admin-loans/admin-loans';
 import { NotFound } from './pages/not-found/not-found';
 
 import { authGuard } from './guards/auth.guard';
@@ -99,6 +100,11 @@ export const routes: Routes = [
             {
                 path: 'admin',
                 component: AdminDashboard,
+                canActivate: [adminGuard]
+            },
+            {
+                path: 'admin/loans',
+                component: AdminLoans,
                 canActivate: [adminGuard]
             }
         ]

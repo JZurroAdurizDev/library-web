@@ -1,0 +1,308 @@
+<section>
+
+    <section>
+        <a routerLink="/dashboard/admin">
+            Volver al panel de administración
+        </a>
+
+        <p>Administración</p>
+
+        <h1>Gestión de préstamos</h1>
+
+        <p>
+            Revisa todos los préstamos registrados, modifica sus fechas,
+            cierra préstamos activos o elimina registros cuando sea necesario.
+        </p>
+    </section>
+
+    @if (loading()) {
+        <section aria-label="Cargando préstamos">
+            <p>Cargando</p>
+
+            <h2>Cargando préstamos</h2>
+
+            <p>
+                Estamos recuperando la lista de préstamos registrados.
+            </p>
+        </section>
+    } @else if (error()) {
+        <section aria-label="Error al cargar préstamos">
+            <article>
+                <p>Error de carga</p>
+
+                <h2>No se pudieron cargar los préstamos</h2>
+
+                <p>
+                    {{ error() }}
+                </p>
+
+                <button
+                    type="button"
+                    (click)="loadLoans()"
+                >
+                    Reintentar
+                </button>
+            </article>
+        </section>
+    } @else {
+        <section aria-label="Resumen de préstamos">
+            <article>
+                <p>Total</p>
+
+                <h2>Préstamos registrados</h2>
+
+                <p>{{ totalLoans() }}</p>
+            </article>
+
+            <article>
+                <p>Activos</p>
+
+                <h2>Préstamos activos</h2>
+
+                <p>{{ activeLoans() }}</p>
+            </article>
+
+            <article>
+                <p>Cerrados</p>
+
+                <h2>Préstamos cerrados</h2>
+
+                <p>{{ closedLoans() }}</p>
+            </article>
+        </section>
+
+        @if (actionError()) {
+            <section aria-label="Error al gestionar préstamos">
+                <article>
+                    <p>No se pudo completar la acción</p>
+
+                    <p>
+                        {{ actionError() }}
+                    </p>
+                </article>
+            </section>
+        }
+
+        @if (formError()) {
+            <section aria-label="Error de formulario">
+                <article>
+                    <p>Formulario incorrecto</p>
+
+                    <p>
+                        {{ formError() }}
+                    </p>
+                </article>
+            </section>
+        }
+
+        @if (selectedLoanToDelete(); as loanToDelete) {
+            <section aria-label="Confirmar eliminación de préstamo">
+                <article>
+                    <p>Confirmar eliminación</p>
+
+                    <h2>
+                        ¿Eliminar el préstamo #{{ loanToDelete.loanId }}?
+                    </h2>
+
+                    <p>
+                        Esta acción eliminará el préstamo asociado al usuario
+                        <strong>#{{ loanToDelete.userId }}</strong>.
+                    </p>
+
+                    <p>
+                        La operación no se puede deshacer desde esta pantalla.
+                    </p>
+
+                    <button
+                        type="button"
+                        (click)="cancelLoanDeletion()"
+                    >
+                        Cancelar
+                    </button>
+
+                    <button
+                        type="button"
+                        (click)="confirmLoanDeletion(loanToDelete.loanId)"
+                        [disabled]="deletingLoanId() === loanToDelete.loanId"
+                    >
+                        @if (deletingLoanId() === loanToDelete.loanId) {
+                            Eliminando préstamo...
+                        } @else {
+                            Sí, eliminar préstamo
+                        }
+                    </button>
+                </article>
+            </section>
+        }
+
+        <section aria-label="Listado de préstamos">
+            <div>
+                <h2>Préstamos registrados</h2>
+
+                <p>
+                    Lista completa de préstamos disponibles actualmente en la aplicación.
+                </p>
+            </div>
+
+            @if (!hasLoans()) {
+                <article>
+                    <p>Sin préstamos</p>
+
+                    <h3>No hay préstamos registrados</h3>
+
+                    <p>
+                        Cuando se creen préstamos, aparecerán en esta sección.
+                    </p>
+                </article>
+            } @else {
+                <section>
+                    @for (loan of loans(); track loan.loanId) {
+                        <article>
+                            <header>
+                                <div>
+                                    <h3>
+                                        Préstamo #{{ loan.loanId }}
+                                    </h3>
+
+                                    <p>
+                                        Usuario #{{ loan.userId }}
+                                    </p>
+                                </div>
+
+                                <p>
+                                    {{ getLoanStatusText(loan.status) }}
+                                </p>
+                            </header>
+
+                            <section aria-label="Información del préstamo">
+                                <p>
+                                    <strong>Fecha de inicio:</strong>
+                                    {{ loan.startDate }}
+                                </p>
+
+                                <p>
+                                    <strong>Fecha de devolución:</strong>
+                                    {{ loan.dueDate }}
+                                </p>
+
+                                <p>
+                                    <strong>Cerrado en:</strong>
+                                    {{ getClosedAtText(loan.closedAt) }}
+                                </p>
+
+                                <p>
+                                    <strong>Libros:</strong>
+                                    {{ getBookTitles(loan) }}
+                                </p>
+                            </section>
+
+                            @if (selectedLoanToEdit()?.loanId === loan.loanId) {
+                                <section aria-label="Editar fechas del préstamo">
+                                    <h4>
+                                        Editar fechas
+                                    </h4>
+
+                                    <form
+                                        [formGroup]="loanForm"
+                                        (ngSubmit)="updateLoanDates(loan.loanId)"
+                                    >
+                                        <div>
+                                            <label for="startDate">
+                                                Fecha de inicio
+                                            </label>
+
+                                            <input
+                                                id="startDate"
+                                                type="date"
+                                                formControlName="startDate"
+                                            >
+
+                                            @if (hasFieldError('startDate')) {
+                                                <p>
+                                                    La fecha de inicio es obligatoria.
+                                                </p>
+                                            }
+                                        </div>
+
+                                        <div>
+                                            <label for="dueDate">
+                                                Fecha de devolución
+                                            </label>
+
+                                            <input
+                                                id="dueDate"
+                                                type="date"
+                                                formControlName="dueDate"
+                                            >
+
+                                            @if (hasFieldError('dueDate')) {
+                                                <p>
+                                                    La fecha de devolución es obligatoria.
+                                                </p>
+                                            }
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            (click)="cancelLoanEdition()"
+                                        >
+                                            Cancelar
+                                        </button>
+
+                                        <button
+                                            type="submit"
+                                            [disabled]="updatingLoanId() === loan.loanId"
+                                        >
+                                            @if (updatingLoanId() === loan.loanId) {
+                                                Guardando cambios...
+                                            } @else {
+                                                Guardar cambios
+                                            }
+                                        </button>
+                                    </form>
+                                </section>
+                            }
+
+                            <footer>
+                                <button
+                                    type="button"
+                                    (click)="startLoanEdition(loan)"
+                                    [disabled]="loan.status === 'CLOSED' || updatingLoanId() === loan.loanId || deletingLoanId() === loan.loanId"
+                                >
+                                    Editar fechas
+                                </button>
+
+                                @if (loan.status === 'ACTIVE') {
+                                    <button
+                                        type="button"
+                                        (click)="closeLoan(loan.loanId)"
+                                        [disabled]="updatingLoanId() === loan.loanId || deletingLoanId() === loan.loanId"
+                                    >
+                                        @if (updatingLoanId() === loan.loanId) {
+                                            Cerrando préstamo...
+                                        } @else {
+                                            Cerrar préstamo
+                                        }
+                                    </button>
+                                }
+
+                                <button
+                                    type="button"
+                                    (click)="requestLoanDeletion(loan)"
+                                    [disabled]="updatingLoanId() === loan.loanId || deletingLoanId() === loan.loanId"
+                                >
+                                    @if (deletingLoanId() === loan.loanId) {
+                                        Eliminando préstamo...
+                                    } @else {
+                                        Eliminar préstamo
+                                    }
+                                </button>
+                            </footer>
+                        </article>
+                    }
+                </section>
+            }
+        </section>
+    }
+
+</section>
