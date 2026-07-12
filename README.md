@@ -191,43 +191,15 @@ services/
 
 This frontend consumes a Spring Boot API named `libraryapi`.
 
-The API base URL is configured through Angular environment files and must point to the active backend environment.
+The API base URL is configured through the Angular environment files.
 
-For local development, the frontend should point to the locally running backend API.
-
-For production, the frontend should point to the deployed backend API URL provided by Railway or by the configured backend domain.
-
-The frontend does not depend on a hardcoded API URL in the application code.
-
-Example environment shape:
+Example:
 
 ```ts
 export const environment = {
-  apiUrl: '<API_BASE_URL>'
+  apiUrl: 'http://localhost:8080'
 };
 ```
-
-## Environment Configuration
-
-Create or update the Angular environment files according to the target environment.
-
-Example local configuration:
-
-```ts
-export const environment = {
-  apiUrl: 'http://localhost:<BACKEND_PORT>'
-};
-```
-
-Example production configuration:
-
-```ts
-export const environment = {
-  apiUrl: '<RAILWAY_BACKEND_URL_OR_CUSTOM_API_DOMAIN>'
-};
-```
-
-When deploying to Vercel, the frontend build must use the production API URL that points to the deployed backend.
 
 ## Deployment
 
@@ -238,13 +210,6 @@ Planned deployment:
 - Backend supporting services: Railway
 
 The backend deployment requires several services, including the main API, databases, Kafka and supporting application services.
-
-The final public URLs depend on the deployed Vercel and Railway environments and should be added here after deployment.
-
-```text
-Frontend URL: <VERCEL_FRONTEND_URL>
-Backend API URL: <RAILWAY_BACKEND_URL_OR_CUSTOM_API_DOMAIN>
-```
 
 ## Installation
 
@@ -258,7 +223,11 @@ npm install
 ng serve
 ```
 
-Angular will start a local development server. The exact local frontend URL depends on the Angular CLI output and local configuration.
+The application will be available at:
+
+```text
+http://localhost:4200
+```
 
 ## Build
 
