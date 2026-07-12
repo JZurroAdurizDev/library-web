@@ -10,15 +10,7 @@
 
     <!-- Authentication actions -->
     <div class="header-actions">
-
-        <button
-            type="button"
-            aria-label="Cambiar idioma">
-            <span class="material-symbols-outlined">
-                language
-            </span>
-        </button>
-
+        
         <a
             [routerLink]="authService.isLoggedIn() ? '/account' : '/login'"
             [attr.aria-label]="
