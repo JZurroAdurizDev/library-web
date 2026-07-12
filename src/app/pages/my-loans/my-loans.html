@@ -10,8 +10,114 @@
         </h1>
 
         <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
-            Consulta los préstamos asociados a tu cuenta y revisa los libros incluidos
-            en cada uno de ellos.
+            Consulta tus préstamos activos y revisa el historial usando los filtros de búsqueda.
+        </p>
+    </section>
+
+    <section
+        aria-label="Búsqueda de préstamos"
+        class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+    >
+        <div class="mb-5">
+            <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
+                Búsqueda
+            </p>
+
+            <h2 class="text-xl font-semibold tracking-tight text-slate-950">
+                Buscar préstamos
+            </h2>
+
+            <p class="mt-3 text-sm leading-6 text-slate-600">
+                Por defecto se muestran tus préstamos activos. Puedes filtrar por estado, fecha de inicio o fecha de devolución prevista.
+            </p>
+        </div>
+
+        <form
+            class="grid gap-4 lg:grid-cols-[220px_1fr_1fr_auto_auto]"
+            [formGroup]="searchForm"
+            (ngSubmit)="searchLoans()"
+        >
+            <div>
+                <label
+                    for="loanStatus"
+                    class="mb-2 block text-sm font-semibold text-slate-700"
+                >
+                    Estado
+                </label>
+
+                <select
+                    id="loanStatus"
+                    formControlName="status"
+                    class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-950 shadow-sm outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20"
+                >
+                    <option value="ACTIVE">Activos</option>
+                    <option value="CLOSED">Cerrados</option>
+                    <option value="ALL">Todos</option>
+                </select>
+            </div>
+
+            <div>
+                <label
+                    for="startDate"
+                    class="mb-2 block text-sm font-semibold text-slate-700"
+                >
+                    Fecha de inicio
+                </label>
+
+                <input
+                    id="startDate"
+                    type="date"
+                    formControlName="startDate"
+                    class="block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-950 shadow-sm outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20"
+                >
+            </div>
+
+            <div>
+                <label
+                    for="dueDate"
+                    class="mb-2 block text-sm font-semibold text-slate-700"
+                >
+                    Devolución prevista
+                </label>
+
+                <input
+                    id="dueDate"
+                    type="date"
+                    formControlName="dueDate"
+                    class="block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-950 shadow-sm outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20"
+                >
+            </div>
+
+            <div class="flex items-end">
+                <button
+                    type="submit"
+                    class="w-full rounded bg-emerald-700 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    [disabled]="loading()"
+                >
+                    Buscar
+                </button>
+            </div>
+
+            <div class="flex items-end">
+                <button
+                    type="button"
+                    class="w-full rounded border border-slate-300 bg-white px-5 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    (click)="clearSearch()"
+                    [disabled]="loading()"
+                >
+                    Limpiar
+                </button>
+            </div>
+        </form>
+
+        @if (searchError()) {
+            <p class="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                {{ searchError() }}
+            </p>
+        }
+
+        <p class="mt-4 text-sm leading-6 text-slate-600">
+            {{ searchSummary() }}
         </p>
     </section>
 
@@ -119,7 +225,7 @@
         </section>
     } @else if (userLoans().length === 0) {
         <section
-            aria-label="Sin préstamos registrados"
+            aria-label="Sin préstamos visibles"
             class="rounded-xl border border-slate-200 bg-white p-8 shadow-sm"
         >
             <article class="mx-auto max-w-2xl text-center">
@@ -127,7 +233,28 @@
                     📚
                 </div>
 
-                @if (hasPendingLoanSelection()) {
+                @if (searchActive()) {
+                    <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
+                        Sin resultados
+                    </p>
+
+                    <h2 class="text-2xl font-semibold tracking-tight text-slate-950">
+                        No se encontraron préstamos
+                    </h2>
+
+                    <p class="mt-3 text-sm leading-6 text-slate-600">
+                        No hay préstamos que coincidan con la búsqueda actual.
+                        Puedes probar con otros filtros o limpiar la búsqueda para volver a tus préstamos activos.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="mt-6 rounded bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2"
+                        (click)="clearSearch()"
+                    >
+                        Ver préstamos activos
+                    </button>
+                } @else if (hasPendingLoanSelection()) {
                     <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
                         Solicitud pendiente
                     </p>
@@ -144,22 +271,22 @@
                     <button
                         type="button"
                         class="mt-6 rounded bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2"
-                        (click)="navigateToNewLoan()"
+                        (click)="continueLoanRequest()"
                     >
                         Continuar solicitud
                     </button>
                 } @else {
                     <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
-                        Sin préstamos registrados
+                        Sin préstamos activos
                     </p>
 
                     <h2 class="text-2xl font-semibold tracking-tight text-slate-950">
-                        Aún no tienes préstamos
+                        No tienes préstamos activos
                     </h2>
 
                     <p class="mt-3 text-sm leading-6 text-slate-600">
-                        Cuando realices tu primer préstamo, aparecerá aquí junto con sus libros,
-                        fechas y estado.
+                        Ahora mismo no tienes ningún préstamo activo. Puedes consultar préstamos cerrados
+                        o todos tus préstamos usando el filtro de estado.
                     </p>
 
                     <button
@@ -179,11 +306,11 @@
         >
             <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
                 <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
-                    Total
+                    Total visible
                 </p>
 
                 <h2 class="text-sm font-semibold text-slate-950">
-                    Total de préstamos
+                    Préstamos mostrados
                 </h2>
 
                 <p class="mt-4 text-3xl font-bold tracking-tight text-slate-950">
@@ -193,7 +320,7 @@
 
             <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
                 <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
-                    Activos
+                    Activos visibles
                 </p>
 
                 <h2 class="text-sm font-semibold text-slate-950">
@@ -207,7 +334,7 @@
 
             <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
                 <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
-                    Cerrados
+                    Cerrados visibles
                 </p>
 
                 <h2 class="text-sm font-semibold text-slate-950">
@@ -226,15 +353,19 @@
         >
             <div>
                 <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-emerald-800">
-                    Historial
+                    Préstamos
                 </p>
 
                 <h2 class="text-xl font-semibold tracking-tight text-slate-950">
-                    Historial de préstamos
+                    Préstamos mostrados
                 </h2>
 
                 <p class="mt-3 text-sm leading-6 text-slate-600">
-                    Estos son los préstamos registrados en tu cuenta.
+                    @if (searchActive()) {
+                        Se han encontrado {{ userLoans().length }} préstamos para la búsqueda actual.
+                    } @else {
+                        Estos son tus préstamos activos.
+                    }
                 </p>
             </div>
 
