@@ -2,7 +2,9 @@
 
 Library Web is a frontend SPA for a digital library management system, built with Angular.
 
-The application provides a public landing area, authentication pages, protected user routes, administrative routes, and a reusable domain service layer prepared to consume a Spring Boot REST API called `libraryapi`.
+The application provides a public landing area, authentication pages, protected user routes, administrative routes, book catalogue management, user loan management and admin-only management pages.
+
+The frontend consumes a Spring Boot REST API called `libraryapi`.
 
 ## Tech Stack
 
@@ -11,11 +13,12 @@ The application provides a public landing area, authentication pages, protected 
 - Tailwind CSS
 - Angular Router
 - Angular Signals
+- Reactive Forms
 - RxJS
 - JWT authentication using `HttpOnly` cookies
 - REST API integration with Spring Boot
 
-## Current Features
+## Features
 
 ### Public Area
 
@@ -38,19 +41,42 @@ The application provides a public landing area, authentication pages, protected 
 - Admin guard for restricted routes
 - Credential handling through an HTTP interceptor
 
-### Authenticated Area
+### Authenticated User Area
 
 The authenticated section uses a dedicated layout with sidebar navigation.
 
-Prepared routes:
+Available user features:
 
-- Dashboard
-- Books
-- My Loans
-- Account
-- Admin Dashboard
+- Dashboard overview
+- Book catalogue
+- Book detail page
+- Book search by title, author, ISBN or publication year
+- Loan request flow
+- User loan management
+- Loan search by status, start date or due date
+- Active loans shown by default
+- Account page
+- Not Found handling for unavailable routes
 
-### Domain Services
+### Admin Area
+
+Admin users have access to additional management pages:
+
+- Admin dashboard
+- Book creation
+- Book edition
+- Book deletion
+- User management
+- User search by email, DNI, first name or last name
+- Frontend pagination for the user list
+- User edition
+- User deletion
+- Loan management
+- Loan edition
+- Loan closing
+- Loan deletion
+
+## Domain Services
 
 The project separates HTTP communication from frontend state management.
 
@@ -63,6 +89,9 @@ UserService     → User domain state and operations
 
 LoanApiService  → HTTP communication with /loans
 LoanService     → Loan domain state and operations
+
+AuthApiService  → HTTP communication with /auth
+AuthService     → Authenticated user and session state
 ```
 
 Each domain state service manages:
@@ -70,6 +99,7 @@ Each domain state service manages:
 - domain data
 - loading state
 - error state
+- action-specific state when needed
 
 State is handled with Angular signals and exposed as readonly signals.
 
@@ -124,7 +154,7 @@ services/
 → API services and frontend state services grouped by domain.
 ```
 
-## Routes
+## Main Routes
 
 ### Public Routes
 
@@ -142,9 +172,19 @@ services/
 ```text
 /dashboard
 /dashboard/books
+/dashboard/books/:id
 /dashboard/my-loans
+/dashboard/my-loans/new
 /dashboard/account
+```
+
+### Admin Routes
+
+```text
 /dashboard/admin
+/dashboard/books/new
+/dashboard/admin/users
+/dashboard/admin/loans
 ```
 
 ## Backend Requirement
@@ -160,6 +200,16 @@ export const environment = {
   apiUrl: 'http://localhost:8080'
 };
 ```
+
+## Deployment
+
+Planned deployment:
+
+- Frontend: Vercel
+- Backend: Railway
+- Backend supporting services: Railway
+
+The backend deployment requires several services, including the main API, databases, Kafka and supporting application services.
 
 ## Installation
 
@@ -187,29 +237,49 @@ ng build
 
 ## Development Status
 
-This project is currently under development.
+This project is currently in MVP-complete state.
 
-Completed foundation:
+Implemented:
 
 - Public layout
 - Authenticated layout
 - Authentication flow
+- Session restoration
 - Route guards
+- Admin-only routes
 - Domain models
 - API services
-- Domain state services
+- Domain state services using Angular signals
 - Static legal pages
 - Not Found fallback page
+- Authenticated dashboard
+- Book catalogue
+- Book detail page
+- Book search
+- Loan request flow
+- User loan management
+- Loan search
+- Account page
+- Admin dashboard
+- Admin book management
+- Admin user management
+- Admin user search
+- Admin user pagination
+- Admin loan management
+- Loading, error and empty states
 
-Pending work:
+## Future Improvements
 
-- Dynamic authenticated dashboard
-- Book catalogue integration
-- User loan management page
-- Account management features
-- Admin dashboard functionality
-- Full UI translation support
-- Final visual polish and screenshots
+Possible improvements for future iterations:
+
+- Add unit tests for API services and domain services
+- Add end-to-end tests for the main user flows
+- Add internationalization support with a language selector
+- Add dark mode support
+- Add a dedicated user settings/preferences page
+- Add backend pagination for large datasets
+- Improve visual polish and accessibility details
+- Add more advanced admin filtering options
 
 ## Author
 
