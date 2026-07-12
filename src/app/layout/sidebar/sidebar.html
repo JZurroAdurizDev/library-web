@@ -1,0 +1,144 @@
+<aside
+    class="flex min-h-screen w-64 shrink-0 flex-col border-r border-slate-200 bg-slate-100 px-4 py-5"
+    aria-label="Navegación principal">
+
+    <!-- Brand -->
+    <div class="flex items-center gap-3 px-2">
+
+        <img
+            class="h-9 w-9 object-contain"
+            src="/images/logo.png"
+            alt="Logo de Library Web">
+
+        <span class="text-lg font-bold tracking-tight text-slate-950">
+            Library Web
+        </span>
+
+    </div>
+
+    <!-- Authenticated user -->
+    @if (currentUser(); as user) {
+
+        <div
+            class="mt-6 flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-3 shadow-sm">
+
+            <div
+                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
+
+                <span
+                    class="material-symbols-outlined text-xl"
+                    aria-hidden="true">
+                    person
+                </span>
+
+            </div>
+
+            <div class="min-w-0">
+
+                <p class="truncate text-sm font-semibold text-slate-950">
+                    {{ user.firstName }} {{ user.lastName }}
+                </p>
+
+                <p class="mt-0.5 text-xs text-slate-500">
+                    {{ user.role === 'ADMIN' ? 'Administrador' : 'Lector activo' }}
+                </p>
+
+            </div>
+
+        </div>
+
+    }
+
+    <!-- Main navigation -->
+    <nav class="mt-5 flex flex-1 flex-col gap-1">
+
+        <a
+            class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-200 hover:text-slate-950"
+            routerLink="/dashboard"
+            routerLinkActive="bg-emerald-300 text-slate-950"
+            [routerLinkActiveOptions]="{ exact: true }">
+
+            <span
+                class="material-symbols-outlined text-xl"
+                aria-hidden="true">
+                home
+            </span>
+
+            <span>Inicio</span>
+
+        </a>
+
+        <a
+            class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-200 hover:text-slate-950"
+            routerLink="/dashboard/books"
+            routerLinkActive="bg-emerald-300 text-slate-950">
+
+            <span
+                class="material-symbols-outlined text-xl"
+                aria-hidden="true">
+                menu_book
+            </span>
+
+            <span>Catálogo</span>
+
+        </a>
+
+        <a
+            class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-200 hover:text-slate-950"
+            routerLink="/dashboard/my-loans"
+            routerLinkActive="bg-emerald-300 text-slate-950">
+
+            <span
+                class="material-symbols-outlined text-xl"
+                aria-hidden="true">
+                book_2
+            </span>
+
+            <span>Mis préstamos</span>
+
+        </a>
+
+        <a
+            class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-200 hover:text-slate-950"
+            routerLink="/dashboard/account"
+            routerLinkActive="bg-emerald-300 text-slate-950">
+
+            <span
+                class="material-symbols-outlined text-xl"
+                aria-hidden="true">
+                account_circle
+            </span>
+
+            <span>Mi cuenta</span>
+
+        </a>
+
+        @if (currentUser()?.role === 'ADMIN') {
+
+            <div class="my-3 border-t border-slate-200"></div>
+
+            <p
+                class="px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                Administración
+            </p>
+
+            <a
+                class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-200 hover:text-slate-950"
+                routerLink="/dashboard/admin"
+                routerLinkActive="bg-emerald-300 text-slate-950">
+
+                <span
+                    class="material-symbols-outlined text-xl"
+                    aria-hidden="true">
+                    admin_panel_settings
+                </span>
+
+                <span>Administración</span>
+
+            </a>
+
+        }
+
+    </nav>
+
+</aside>

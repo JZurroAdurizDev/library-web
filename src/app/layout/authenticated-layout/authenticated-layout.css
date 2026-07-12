@@ -1,0 +1,18 @@
+:host {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+
+    min-height: 100dvh;
+}
+
+main {
+    min-width: 0;
+    min-height: 100dvh;
+
+    background: linear-gradient(
+        to bottom right,
+        #f8fafc,
+        #ffffff,
+        #ecfdf5
+    );
+}

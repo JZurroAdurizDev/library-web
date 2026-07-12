@@ -1,0 +1,10 @@
+:host {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+
+    min-height: 100dvh;
+}
+
+main {
+    min-width: 0;
+}

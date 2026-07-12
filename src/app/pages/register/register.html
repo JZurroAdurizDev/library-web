@@ -1,0 +1,424 @@
+<section
+    class="flex min-h-full w-full items-center justify-center bg-gradient-to-br from-slate-50 via-white to-emerald-50 px-4 py-10"
+    aria-labelledby="register-title">
+
+    <div
+        class="w-full max-w-2xl overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl shadow-slate-200/60">
+
+        <!-- Page heading -->
+        <header class="px-6 pt-8 text-center sm:px-8">
+
+            <div
+                class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+
+                <span
+                    class="material-symbols-outlined text-3xl"
+                    aria-hidden="true">
+                    person_add
+                </span>
+
+            </div>
+
+            <h1
+                id="register-title"
+                class="text-2xl font-semibold text-slate-950">
+
+                Crear cuenta
+
+            </h1>
+
+            <p class="mt-2 text-sm leading-6 text-slate-600">
+                Regístrate para acceder al catálogo y gestionar tus préstamos.
+            </p>
+
+        </header>
+
+        <!-- Registration form -->
+        <form
+            class="grid grid-cols-1 gap-5 px-6 py-8 sm:grid-cols-2 sm:px-8"
+            [formGroup]="registerForm"
+            (ngSubmit)="onSubmit()"
+            novalidate>
+
+            <!-- DNI -->
+            <div>
+
+                <label
+                    for="dni"
+                    class="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-600">
+
+                    DNI
+
+                </label>
+
+                <div class="group relative">
+
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-xl text-slate-400 transition-colors group-focus-within:text-emerald-700"
+                        aria-hidden="true">
+                        badge
+                    </span>
+
+                    <input
+                        id="dni"
+                        class="w-full rounded-lg border border-slate-300 bg-slate-50 py-3 pl-11 pr-4 text-sm uppercase text-slate-900 outline-none transition focus:border-emerald-700 focus:bg-white focus:ring-2 focus:ring-emerald-700/20"
+                        type="text"
+                        formControlName="dni"
+                        autocomplete="off"
+                        maxlength="9"
+                        placeholder="12345678Z">
+
+                </div>
+
+                @if (
+                    registerForm.controls['dni'].touched &&
+                    registerForm.controls['dni'].hasError('required')
+                ) {
+                    <p
+                        class="mt-1.5 text-sm text-red-600"
+                        role="alert">
+
+                        El DNI es obligatorio.
+
+                    </p>
+                }
+
+                @if (
+                    registerForm.controls['dni'].touched &&
+                    registerForm.controls['dni'].hasError('pattern')
+                ) {
+                    <p
+                        class="mt-1.5 text-sm text-red-600"
+                        role="alert">
+
+                        Introduce un DNI válido.
+
+                    </p>
+                }
+
+            </div>
+
+            <!-- Email -->
+            <div>
+
+                <label
+                    for="email"
+                    class="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-600">
+
+                    Correo electrónico
+
+                </label>
+
+                <div class="group relative">
+
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-xl text-slate-400 transition-colors group-focus-within:text-emerald-700"
+                        aria-hidden="true">
+                        mail
+                    </span>
+
+                    <input
+                        id="email"
+                        class="w-full rounded-lg border border-slate-300 bg-slate-50 py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition focus:border-emerald-700 focus:bg-white focus:ring-2 focus:ring-emerald-700/20"
+                        type="email"
+                        formControlName="email"
+                        autocomplete="email"
+                        placeholder="correo@ejemplo.com">
+
+                </div>
+
+                @if (
+                    registerForm.controls['email'].touched &&
+                    registerForm.controls['email'].hasError('required')
+                ) {
+                    <p
+                        class="mt-1.5 text-sm text-red-600"
+                        role="alert">
+
+                        El correo electrónico es obligatorio.
+
+                    </p>
+                }
+
+                @if (
+                    registerForm.controls['email'].touched &&
+                    registerForm.controls['email'].hasError('email')
+                ) {
+                    <p
+                        class="mt-1.5 text-sm text-red-600"
+                        role="alert">
+
+                        Introduce un correo electrónico válido.
+
+                    </p>
+                }
+
+            </div>
+
+            <!-- First name -->
+            <div>
+
+                <label
+                    for="firstName"
+                    class="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-600">
+
+                    Nombre
+
+                </label>
+
+                <div class="group relative">
+
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-xl text-slate-400 transition-colors group-focus-within:text-emerald-700"
+                        aria-hidden="true">
+                        person
+                    </span>
+
+                    <input
+                        id="firstName"
+                        class="w-full rounded-lg border border-slate-300 bg-slate-50 py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition focus:border-emerald-700 focus:bg-white focus:ring-2 focus:ring-emerald-700/20"
+                        type="text"
+                        formControlName="firstName"
+                        autocomplete="given-name"
+                        placeholder="Nombre">
+
+                </div>
+
+                @if (
+                    registerForm.controls['firstName'].touched &&
+                    registerForm.controls['firstName'].hasError('required')
+                ) {
+                    <p
+                        class="mt-1.5 text-sm text-red-600"
+                        role="alert">
+
+                        El nombre es obligatorio.
+
+                    </p>
+                }
+
+            </div>
+
+            <!-- Last name -->
+            <div>
+
+                <label
+                    for="lastName"
+                    class="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-600">
+
+                    Apellidos
+
+                </label>
+
+                <div class="group relative">
+
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-xl text-slate-400 transition-colors group-focus-within:text-emerald-700"
+                        aria-hidden="true">
+                        person
+                    </span>
+
+                    <input
+                        id="lastName"
+                        class="w-full rounded-lg border border-slate-300 bg-slate-50 py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition focus:border-emerald-700 focus:bg-white focus:ring-2 focus:ring-emerald-700/20"
+                        type="text"
+                        formControlName="lastName"
+                        autocomplete="family-name"
+                        placeholder="Apellidos">
+
+                </div>
+
+                @if (
+                    registerForm.controls['lastName'].touched &&
+                    registerForm.controls['lastName'].hasError('required')
+                ) {
+                    <p
+                        class="mt-1.5 text-sm text-red-600"
+                        role="alert">
+
+                        Los apellidos son obligatorios.
+
+                    </p>
+                }
+
+            </div>
+
+            <!-- Password -->
+            <div>
+
+                <label
+                    for="password"
+                    class="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-600">
+
+                    Contraseña
+
+                </label>
+
+                <div class="group relative">
+
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-xl text-slate-400 transition-colors group-focus-within:text-emerald-700"
+                        aria-hidden="true">
+                        lock
+                    </span>
+
+                    <input
+                        id="password"
+                        class="w-full rounded-lg border border-slate-300 bg-slate-50 py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition focus:border-emerald-700 focus:bg-white focus:ring-2 focus:ring-emerald-700/20"
+                        type="password"
+                        formControlName="password"
+                        autocomplete="new-password"
+                        placeholder="••••••••">
+
+                </div>
+
+                @if (
+                    registerForm.controls['password'].touched &&
+                    registerForm.controls['password'].hasError('required')
+                ) {
+                    <p
+                        class="mt-1.5 text-sm text-red-600"
+                        role="alert">
+
+                        La contraseña es obligatoria.
+
+                    </p>
+                }
+
+                @if (
+                    registerForm.controls['password'].touched &&
+                    registerForm.controls['password'].hasError('minlength')
+                ) {
+                    <p
+                        class="mt-1.5 text-sm text-red-600"
+                        role="alert">
+
+                        La contraseña debe tener al menos 6 caracteres.
+
+                    </p>
+                }
+
+            </div>
+
+            <!-- Password confirmation -->
+            <div>
+
+                <label
+                    for="confirmPassword"
+                    class="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-600">
+
+                    Confirmar contraseña
+
+                </label>
+
+                <div class="group relative">
+
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-xl text-slate-400 transition-colors group-focus-within:text-emerald-700"
+                        aria-hidden="true">
+                        lock_reset
+                    </span>
+
+                    <input
+                        id="confirmPassword"
+                        class="w-full rounded-lg border border-slate-300 bg-slate-50 py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition focus:border-emerald-700 focus:bg-white focus:ring-2 focus:ring-emerald-700/20"
+                        type="password"
+                        formControlName="confirmPassword"
+                        autocomplete="new-password"
+                        placeholder="••••••••">
+
+                </div>
+
+                @if (
+                    registerForm.controls['confirmPassword'].touched &&
+                    registerForm.controls['confirmPassword'].hasError('required')
+                ) {
+                    <p
+                        class="mt-1.5 text-sm text-red-600"
+                        role="alert">
+
+                        La confirmación de la contraseña es obligatoria.
+
+                    </p>
+                }
+
+                @if (
+                    registerForm.controls['confirmPassword'].touched &&
+                    registerForm.hasError('passwordMismatch')
+                ) {
+                    <p
+                        class="mt-1.5 text-sm text-red-600"
+                        role="alert">
+
+                        Las contraseñas no coinciden.
+
+                    </p>
+                }
+
+            </div>
+
+            <!-- Registration error -->
+            @if (errorMessage()) {
+                <p
+                    class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 sm:col-span-2"
+                    role="alert">
+
+                    {{ errorMessage() }}
+
+                </p>
+            }
+
+            <!-- Submit -->
+            <button
+                class="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-700 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-800 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2"
+                type="submit"
+                [disabled]="loading()">
+
+                @if (loading()) {
+
+                    <span
+                        class="material-symbols-outlined animate-spin text-xl"
+                        aria-hidden="true">
+                        progress_activity
+                    </span>
+
+                    <span>Registrando...</span>
+
+                } @else {
+
+                    <span>Registrarse</span>
+
+                    <span
+                        class="material-symbols-outlined text-xl"
+                        aria-hidden="true">
+                        arrow_forward
+                    </span>
+
+                }
+
+            </button>
+
+        </form>
+
+        <!-- Login link -->
+        <div class="border-t border-slate-200 bg-slate-50 px-6 py-4 text-center">
+
+            <p class="text-sm text-slate-600">
+
+                ¿Ya tienes una cuenta?
+
+                <a
+                    class="ml-1 font-semibold text-emerald-700 transition hover:text-emerald-800 hover:underline"
+                    routerLink="/login">
+
+                    Inicia sesión
+
+                </a>
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>

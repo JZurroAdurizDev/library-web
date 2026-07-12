@@ -1,0 +1,206 @@
+<section class="space-y-8 px-6 py-8">
+
+    <section class="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+        <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-teal-700">
+            Panel principal
+        </p>
+
+        <h1 class="text-3xl font-semibold tracking-tight text-slate-950">
+            Bienvenido, {{ currentUser()?.firstName }} {{ currentUser()?.lastName }}
+        </h1>
+
+        <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
+            Consulta un resumen de tu actividad reciente de préstamos.
+        </p>
+    </section>
+
+    @if (loading()) {
+        <section
+            aria-label="Cargando información del dashboard"
+            class="space-y-6 rounded-xl border border-slate-200 bg-white p-8 shadow-sm"
+        >
+            <div>
+                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-teal-700">
+                    Cargando
+                </p>
+
+                <h2 class="text-2xl font-semibold tracking-tight text-slate-950">
+                    Cargando información
+                </h2>
+
+                <p class="mt-3 text-sm leading-6 text-slate-600">
+                    Estamos recuperando tus préstamos y libros recientes.
+                </p>
+            </div>
+
+            <div class="grid gap-6 lg:grid-cols-[280px_1fr]">
+                <article class="animate-pulse rounded-lg border border-slate-200 bg-white p-6">
+                    <div class="mb-4 h-4 w-32 rounded bg-slate-200"></div>
+                    <div class="mb-3 h-8 w-16 rounded bg-slate-200"></div>
+                    <div class="h-4 w-44 rounded bg-slate-100"></div>
+                </article>
+
+                <article class="animate-pulse rounded-lg border border-slate-200 bg-white p-6">
+                    <div class="mb-6 h-5 w-56 rounded bg-slate-200"></div>
+
+                    <div class="space-y-4">
+                        <div class="h-16 rounded bg-slate-100"></div>
+                        <div class="h-16 rounded bg-slate-100"></div>
+                        <div class="h-16 rounded bg-slate-100"></div>
+                    </div>
+                </article>
+            </div>
+        </section>
+    } @else if (error()) {
+        <section
+            aria-label="Error al cargar el dashboard"
+            class="rounded-xl border border-red-200 bg-white p-8 shadow-sm"
+        >
+            <article class="mx-auto max-w-2xl text-center">
+                <div class="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-700">
+                    !
+                </div>
+
+                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-red-700">
+                    Error de carga
+                </p>
+
+                <h2 class="text-2xl font-semibold tracking-tight text-slate-950">
+                    No se pudo cargar tu actividad
+                </h2>
+
+                <p class="mt-3 text-sm leading-6 text-slate-600">
+                    Ha ocurrido un problema al recuperar tus préstamos y libros recientes.
+                    Puedes intentarlo de nuevo en unos momentos.
+                </p>
+
+                <button
+                    type="button"
+                    class="mt-6 rounded bg-teal-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-700 focus:ring-offset-2"
+                    (click)="loadDashboardData()"
+                >
+                    Reintentar
+                </button>
+            </article>
+        </section>
+    } @else if (userLoans().length === 0) {
+        <section
+            aria-label="Sin préstamos registrados"
+            class="rounded-xl border border-slate-200 bg-white p-8 shadow-sm"
+        >
+            <article class="mx-auto max-w-2xl text-center">
+                <div class="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-teal-100 text-teal-700">
+                    📚
+                </div>
+
+                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-teal-700">
+                    Sin actividad registrada
+                </p>
+
+                <h2 class="text-2xl font-semibold tracking-tight text-slate-950">
+                    Aún no tienes préstamos
+                </h2>
+
+                <p class="mt-3 text-sm leading-6 text-slate-600">
+                    Cuando realices tu primer préstamo, aquí aparecerá un resumen de tu actividad
+                    y tus libros prestados más recientemente.
+                </p>
+            </article>
+        </section>
+    } @else {
+        <section aria-label="Resumen de préstamos">
+            <article class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-teal-700">
+                    Actividad global
+                </p>
+
+                <h2 class="text-base font-semibold text-slate-950">
+                    Total de préstamos realizados
+                </h2>
+
+                <p class="mt-4 text-4xl font-bold tracking-tight text-slate-950">
+                    {{ totalLoans() }}
+                </p>
+
+                <p class="mt-3 text-sm leading-6 text-slate-600">
+                    Préstamos asociados a tu cuenta.
+                </p>
+            </article>
+        </section>
+
+        <section
+            aria-label="Libros prestados recientemente"
+            class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+        >
+            <div class="mb-6">
+                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-teal-700">
+                    Actividad reciente
+                </p>
+
+                <h2 class="text-2xl font-semibold tracking-tight text-slate-950">
+                    Libros prestados recientemente
+                </h2>
+
+                <p class="mt-3 text-sm leading-6 text-slate-600">
+                    Estos libros proceden de tus préstamos más recientes.
+                </p>
+            </div>
+
+            @if (recentBooks().length === 0) {
+                <article class="rounded-lg border border-slate-200 bg-slate-50 p-6">
+                    <h3 class="text-base font-semibold text-slate-950">
+                        No hay libros recientes para mostrar
+                    </h3>
+
+                    <p class="mt-2 text-sm leading-6 text-slate-600">
+                        Tus libros recientes aparecerán aquí cuando existan préstamos con libros asociados.
+                    </p>
+                </article>
+            } @else {
+                <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                    @for (book of recentBooks(); track book.bookId) {
+                        <article class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                            <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                Libro prestado
+                            </p>
+
+                            <h3 class="text-lg font-semibold leading-7 text-slate-950">
+                                {{ book.title }}
+                            </h3>
+
+                            <dl class="mt-4 space-y-3 text-sm">
+                                <div>
+                                    <dt class="font-medium text-slate-500">
+                                        Autor
+                                    </dt>
+                                    <dd class="mt-1 text-slate-900">
+                                        {{ book.author }}
+                                    </dd>
+                                </div>
+
+                                <div>
+                                    <dt class="font-medium text-slate-500">
+                                        ISBN
+                                    </dt>
+                                    <dd class="mt-1 text-slate-900">
+                                        {{ book.isbn }}
+                                    </dd>
+                                </div>
+
+                                <div>
+                                    <dt class="font-medium text-slate-500">
+                                        Año de publicación
+                                    </dt>
+                                    <dd class="mt-1 text-slate-900">
+                                        {{ book.publishedYear }}
+                                    </dd>
+                                </div>
+                            </dl>
+                        </article>
+                    }
+                </section>
+            }
+        </section>
+    }
+
+</section>

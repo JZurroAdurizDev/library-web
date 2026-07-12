@@ -1,0 +1,62 @@
+/* Header container */
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 24px;
+
+    min-height: 64px;
+    padding: 0 32px;
+
+    border-bottom: 1px solid #bcc7d4;
+}
+
+/* Brand section */
+.header-brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+}
+
+.header-logo {
+    height: 100px;
+    width: auto;
+    display: block;
+}
+
+/* Main navigation */
+.header-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+}
+
+/* Navigation links */
+.header-nav a {
+    text-decoration: none;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+/* Authentication section */
+.header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+}
+
+/* Authentication links */
+.header-actions a {
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-weight: 700;
+}

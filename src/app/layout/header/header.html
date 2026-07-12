@@ -1,0 +1,30 @@
+<header class="header">
+
+    <!-- Application brand -->
+    <a routerLink="/home" class="header-brand">
+        <img
+            src="images/logo.png"
+            alt="Library Web logo"
+            class="header-logo">
+    </a>
+
+    <!-- Authentication actions -->
+    <div class="header-actions">
+        
+        <a
+            [routerLink]="authService.isLoggedIn() ? '/account' : '/login'"
+            [attr.aria-label]="
+                authService.isLoggedIn()
+                    ? 'Mi cuenta'
+                    : 'Iniciar sesión'
+            ">
+
+            <span class="material-symbols-outlined">
+                account_circle
+            </span>
+
+        </a>
+
+    </div>
+
+</header>
